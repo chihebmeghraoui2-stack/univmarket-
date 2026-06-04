@@ -157,14 +157,34 @@ export default function Home() {
           <section>
             <h2 className="section-title mb-6">{t("popular_categories")}</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-              {popularCats.map(cat => (
-                <button key={cat.id} onClick={() => setLocation(`/search?category_id=${cat.id}`)}
-                  className="group flex flex-col items-center gap-2 p-4 rounded-xl border bg-card hover:border-primary hover:bg-primary/5 transition-all text-center">
-                  <span className="text-3xl">{CATEGORY_ICONS[cat.slug] ?? "📚"}</span>
-                  <span className="font-medium text-sm group-hover:text-primary transition-colors">{cat.name_fr}</span>
-                  <Badge variant="secondary" className="text-xs">{cat.services_count} {t("services")}</Badge>
-                </button>
-              ))}
+              {popularCats.map((cat, idx) => {
+                const colorSets = [
+                  { bar: "#185FA5", bg: "rgba(24,95,165,0.1)", ic: "#185FA5", icon: "ti-chart-bar" },
+                  { bar: "#534AB7", bg: "rgba(83,74,183,0.1)", ic: "#534AB7", icon: "ti-language" },
+                  { bar: "#993556", bg: "rgba(153,53,86,0.1)", ic: "#993556", icon: "ti-palette" },
+                  { bar: "#0F6E56", bg: "rgba(15,110,86,0.1)", ic: "#0F6E56", icon: "ti-code" },
+                  { bar: "#888780", bg: "rgba(136,135,128,0.1)", ic: "#888780", icon: "ti-dots" },
+                  { bar: "#854F0B", bg: "rgba(133,79,11,0.1)", ic: "#854F0B", icon: "ti-keyboard" },
+                  { bar: "#993C1D", bg: "rgba(153,60,29,0.1)", ic: "#993C1D", icon: "ti-presentation" },
+                  { bar: "#3B6D11", bg: "rgba(59,109,17,0.1)", ic: "#3B6D11", icon: "ti-school" },
+                  { bar: "#3C3489", bg: "rgba(60,52,137,0.1)", ic: "#3C3489", icon: "ti-book" },
+                  { bar: "#A32D2D", bg: "rgba(163,45,45,0.1)", ic: "#A32D2D", icon: "ti-file-check" },
+                ];
+                const c = colorSets[idx % colorSets.length];
+                return (
+                  <button key={cat.id} onClick={() => setLocation(`/search?category_id=${cat.id}`)}
+                    style={{ position: "relative", background: "var(--card)", border: "0.5px solid var(--border)", borderRadius: "16px", padding: "22px 10px 18px", display: "flex", flexDirection: "column", alignItems: "center", gap: "10px", cursor: "pointer", overflow: "hidden", transition: "transform 0.15s" }}
+                    onMouseEnter={e => (e.currentTarget.style.transform = "translateY(-2px)")}
+                    onMouseLeave={e => (e.currentTarget.style.transform = "translateY(0)")}>
+                    <span style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: c.bar, borderRadius: "16px 16px 0 0" }} />
+                    <span style={{ width: "44px", height: "44px", borderRadius: "12px", background: c.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px", color: c.ic }}>
+                      <i className={`ti ${c.icon}`} aria-hidden="true" />
+                    </span>
+                    <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--foreground)", textAlign: "center", lineHeight: 1.3 }}>{cat.name_fr}</span>
+                    <span style={{ fontSize: "10px", fontWeight: 500, padding: "2px 8px", borderRadius: "20px", background: "var(--muted)", color: "var(--muted-foreground)" }}>{cat.services_count} {t("services")}</span>
+                  </button>
+                );
+              })}
             </div>
           </section>
         )}
