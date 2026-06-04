@@ -46,7 +46,7 @@ export function useAuth() {
     if (!token || !user) return;
     const check = async () => {
       try {
-        const res = await fetch("/api/auth/me", {
+        const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/auth/me", {
           headers: { Authorization: "Bearer " + token }
         });
         // Erreur reseau ou serveur -> on ignore totalement, l utilisateur reste connecte
@@ -86,4 +86,5 @@ export function useAuth() {
 export function getAuthToken(): string | null {
   return localStorage.getItem("univmarket_token");
 }
+
 

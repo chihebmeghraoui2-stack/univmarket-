@@ -1,5 +1,5 @@
-// Système analytics interne UnivMarket
-// Stocke les événements localement et les envoie au backend si analytics activé
+﻿// Systأ¨me analytics interne UnivMarket
+// Stocke les أ©vأ©nements localement et les envoie au backend si analytics activأ©
 
 interface AnalyticsEvent {
   event: string;
@@ -32,7 +32,7 @@ export function trackEvent(event: string, properties?: Record<string, any>) {
 
     const token = localStorage.getItem("univmarket_token");
     if (token) {
-      fetch("/api/analytics/track", {
+      fetch((import.meta.env.VITE_API_URL || "") + "/api/analytics/track", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(analyticsEvent),
@@ -66,3 +66,4 @@ export function getAnalyticsEvents(): AnalyticsEvent[] {
     return [];
   }
 }
+
