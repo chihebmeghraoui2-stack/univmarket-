@@ -139,7 +139,7 @@ export default function Login() {
                             </Link>
                           </div>
                           <FormControl>
-                            <Input type="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" className="h-11 rounded-xl border-gray-200 dark:bg-slate-700 dark:border-slate-600 dark:text-white" {...field} />
+                            <Input type="password" placeholder="••••••••" className="h-11 rounded-xl border-gray-200 dark:bg-slate-700 dark:border-slate-600 dark:text-white" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -172,17 +172,8 @@ export default function Login() {
                   </div>
                 </div>
 
-                <div className="rounded-xl p-4 text-xs space-y-1.5" style={{ background: "linear-gradient(135deg, #eff6ff, #dbeafe)", border: "1px solid #bfdbfe" }}>
-                  <p className="font-semibold text-blue-900 flex items-center gap-1.5">
-                    <Zap className="h-3.5 w-3.5" /> {t("demo_accounts")}
-                  </p>
-                  <p className="text-blue-800">Admin: <span className="font-mono bg-blue-100 px-1 rounded">admin@univmarket.dz</span> / <span className="font-mono bg-blue-100 px-1 rounded">Admin123!</span></p>
-                  <p className="text-blue-800">Vendeur: <span className="font-mono bg-blue-100 px-1 rounded">seller@univmarket.dz</span> / <span className="font-mono bg-blue-100 px-1 rounded">Seller123!</span></p>
-                  <p className="text-blue-800">Client: <span className="font-mono bg-blue-100 px-1 rounded">client@univmarket.dz</span> / <span className="font-mono bg-blue-100 px-1 rounded">Client123!</span></p>
                 </div>
-              </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -207,4 +198,6 @@ export default function Login() {
     </>
   );
 }
+
+
 
