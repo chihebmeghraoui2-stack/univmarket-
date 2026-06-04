@@ -32,7 +32,7 @@ export default function ChatWidget({ title = "Assistant UnivMarket", subtitle = 
     setInput("");
     setLoading(true);
     try {
-      const res = await fetch("/api/chat/ai", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/chat/ai`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: trimmed, history: nextHistory, sellerId: user?.role === "seller" ? user?.id ?? null : null, userId: user?.id ?? null, userRole: user?.role ?? "client" }),
