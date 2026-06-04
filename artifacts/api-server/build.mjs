@@ -102,6 +102,7 @@ async function buildAll() {
       "electron",
     ],
     alias: {
+      "@workspace/db/schema": new URL("../../lib/db/src/schema/index.ts", import.meta.url).pathname,
       "@workspace/db": new URL("../../lib/db/src/index.ts", import.meta.url).pathname,
       "@workspace/api-zod": new URL("../../lib/api-zod/src/index.ts", import.meta.url).pathname,
     },    sourcemap: "linked",
