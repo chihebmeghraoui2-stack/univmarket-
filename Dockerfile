@@ -1,8 +1,8 @@
 FROM node:20-alpine
-RUN npm install -g pnpm
+RUN npm install -g pnpm@11
 WORKDIR /app
 COPY . .
-RUN pnpm install --no-frozen-lockfile
+RUN pnpm install --frozen-lockfile
 RUN cd artifacts/api-server && node ./build.mjs
 EXPOSE 3000
 CMD ["node", "--enable-source-maps", "./artifacts/api-server/dist/index.mjs"]
