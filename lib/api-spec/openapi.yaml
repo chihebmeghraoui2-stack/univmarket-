@@ -1,0 +1,2625 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: UnivMarket — Algerian University Marketplace API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: wilayas
+    description: Wilaya (province) operations
+  - name: auth
+    description: Authentication operations
+  - name: users
+    description: User operations
+  - name: categories
+    description: Category operations
+  - name: services
+    description: Service listing operations
+  - name: orders
+    description: Order operations
+  - name: reviews
+    description: Review operations
+  - name: wallet
+    description: Seller wallet operations
+  - name: admin
+    description: Admin operations
+  - name: stats
+    description: Statistics and analytics
+  - name: search
+    description: Search operations
+  - name: disputes
+    description: Dispute operations
+  - name: notifications
+    description: Notification operations
+  - name: wishlist
+    description: Wishlist operations
+  - name: coupons
+    description: Coupon operations
+  - name: leaderboard
+    description: Leaderboard operations
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  # ─── WILAYAS ───
+  /wilayas:
+    get:
+      operationId: listWilayas
+      tags: [wilayas]
+      summary: List all 58 Algerian wilayas
+      parameters:
+        - name: active_only
+          in: query
+          schema:
+            type: boolean
+        - name: pilot_only
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of wilayas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Wilaya"
+
+  /wilayas/{id}:
+    get:
+      operationId: getWilaya
+      tags: [wilayas]
+      summary: Get wilaya by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Wilaya details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WilayaDetail"
+
+  /wilayas/{id}/stats:
+    get:
+      operationId: getWilayaStats
+      tags: [wilayas]
+      summary: Get wilaya statistics
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Wilaya statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WilayaStats"
+
+  # ─── AUTH ───
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInput"
+      responses:
+        "201":
+          description: User registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout
+      responses:
+        "200":
+          description: Logged out
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current authenticated user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+
+  # ─── USERS ───
+  /users/{id}:
+    get:
+      operationId: getUser
+      tags: [users]
+      summary: Get user public profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+
+  /users/me/profile:
+    patch:
+      operationId: updateProfile
+      tags: [users]
+      summary: Update own profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileUpdate"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/me/wilaya-change-request:
+    post:
+      operationId: requestWilayaChange
+      tags: [users]
+      summary: Request wilaya change (seller only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WilayaChangeInput"
+      responses:
+        "201":
+          description: Request submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WilayaChangeRequest"
+
+  # ─── CATEGORIES ───
+  /categories:
+    get:
+      operationId: listCategories
+      tags: [categories]
+      summary: List all categories
+      parameters:
+        - name: parent_id
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: active_only
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+
+  /categories/{id}:
+    get:
+      operationId: getCategory
+      tags: [categories]
+      summary: Get category by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Category
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+
+  /categories/popular:
+    get:
+      operationId: getPopularCategories
+      tags: [categories]
+      summary: Get popular categories with service counts
+      parameters:
+        - name: wilaya_id
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: Popular categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CategoryWithCount"
+
+  # ─── SERVICES ───
+  /services:
+    get:
+      operationId: listServices
+      tags: [services]
+      summary: List services with filters
+      parameters:
+        - name: wilaya_id
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: category_id
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: seller_id
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, approved, rejected, banned]
+        - name: featured
+          in: query
+          schema:
+            type: boolean
+        - name: min_price
+          in: query
+          schema:
+            type: ["number", "null"]
+        - name: max_price
+          in: query
+          schema:
+            type: ["number", "null"]
+        - name: min_rating
+          in: query
+          schema:
+            type: ["number", "null"]
+        - name: price_type
+          in: query
+          schema:
+            type: string
+            enum: [fixed, hourly, negotiable]
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [newest, top_rated, price_asc, price_desc, most_popular]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Paginated service list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedServices"
+
+    post:
+      operationId: createService
+      tags: [services]
+      summary: Create a new service (seller only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ServiceInput"
+      responses:
+        "201":
+          description: Service created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+
+  /services/featured:
+    get:
+      operationId: getFeaturedServices
+      tags: [services]
+      summary: Get featured/sponsored services
+      parameters:
+        - name: wilaya_id
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 8
+      responses:
+        "200":
+          description: Featured services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ServiceCard"
+
+  /services/trending:
+    get:
+      operationId: getTrendingServices
+      tags: [services]
+      summary: Get trending services nationally this week
+      parameters:
+        - name: wilaya_id
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 8
+      responses:
+        "200":
+          description: Trending services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ServiceCard"
+
+  /services/recent:
+    get:
+      operationId: getRecentServices
+      tags: [services]
+      summary: Get most recently added services
+      parameters:
+        - name: wilaya_id
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Recent services
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedServices"
+
+  /services/{id}:
+    get:
+      operationId: getService
+      tags: [services]
+      summary: Get service details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Service detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDetail"
+        "404":
+          description: Not found
+
+    patch:
+      operationId: updateService
+      tags: [services]
+      summary: Update service (seller only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ServiceUpdate"
+      responses:
+        "200":
+          description: Updated service
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+
+    delete:
+      operationId: deleteService
+      tags: [services]
+      summary: Delete service (seller only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── SEARCH ───
+  /search:
+    get:
+      operationId: searchServices
+      tags: [search]
+      summary: Full-text search services
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+        - name: wilaya_id
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: category_id
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: min_price
+          in: query
+          schema:
+            type: ["number", "null"]
+        - name: max_price
+          in: query
+          schema:
+            type: ["number", "null"]
+        - name: min_rating
+          in: query
+          schema:
+            type: ["number", "null"]
+        - name: max_delivery_days
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: price_type
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: verified_only
+          in: query
+          schema:
+            type: boolean
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [relevance, newest, top_rated, price_asc, price_desc, most_popular]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResults"
+
+  /search/autocomplete:
+    get:
+      operationId: autocomplete
+      tags: [search]
+      summary: Search autocomplete suggestions
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Autocomplete suggestions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutocompleteResults"
+
+  # ─── ORDERS ───
+  /orders:
+    get:
+      operationId: listOrders
+      tags: [orders]
+      summary: List orders (client or seller view)
+      parameters:
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum: [client, seller]
+        - name: status
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Orders list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedOrders"
+
+    post:
+      operationId: createOrder
+      tags: [orders]
+      summary: Place a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderInput"
+      responses:
+        "201":
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /orders/{id}:
+    get:
+      operationId: getOrder
+      tags: [orders]
+      summary: Get order details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Order detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderDetail"
+
+  /orders/{id}/accept:
+    post:
+      operationId: acceptOrder
+      tags: [orders]
+      summary: Seller accepts order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Order accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /orders/{id}/deliver:
+    post:
+      operationId: deliverOrder
+      tags: [orders]
+      summary: Seller marks order as delivered
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeliveryInput"
+      responses:
+        "200":
+          description: Order delivered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /orders/{id}/complete:
+    post:
+      operationId: completeOrder
+      tags: [orders]
+      summary: Client confirms delivery and releases escrow
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Order completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /orders/{id}/cancel:
+    post:
+      operationId: cancelOrder
+      tags: [orders]
+      summary: Cancel an order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CancelInput"
+      responses:
+        "200":
+          description: Order cancelled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /orders/{id}/sign-contract:
+    post:
+      operationId: signContract
+      tags: [orders]
+      summary: Sign digital contract for order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Contract signed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DigitalContract"
+
+  # ─── REVIEWS ───
+  /reviews:
+    post:
+      operationId: createReview
+      tags: [reviews]
+      summary: Submit a review for completed order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewInput"
+      responses:
+        "201":
+          description: Review created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Review"
+
+  /reviews/list:
+    get:
+      operationId: listReviews
+      tags: [reviews]
+      summary: Get reviews for a service
+      parameters:
+        - name: service_id
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: Reviews
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedReviews"
+
+  /reviews/{id}/reply:
+    post:
+      operationId: replyToReview
+      tags: [reviews]
+      summary: Seller replies to a review
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewReplyInput"
+      responses:
+        "200":
+          description: Reply added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Review"
+
+  # ─── WALLET ───
+  /wallet:
+    get:
+      operationId: getWallet
+      tags: [wallet]
+      summary: Get seller wallet balance and info
+      responses:
+        "200":
+          description: Wallet info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wallet"
+
+  /wallet/transactions:
+    get:
+      operationId: listWalletTransactions
+      tags: [wallet]
+      summary: List wallet transactions
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Wallet transactions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedWalletTransactions"
+
+  /wallet/withdraw:
+    post:
+      operationId: requestWithdrawal
+      tags: [wallet]
+      summary: Request a withdrawal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WithdrawalInput"
+      responses:
+        "201":
+          description: Withdrawal request created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WithdrawalRequest"
+
+  # ─── DISPUTES ───
+  /disputes:
+    get:
+      operationId: listDisputes
+      tags: [disputes]
+      summary: List disputes (client, seller, or admin view)
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Disputes list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedDisputes"
+
+    post:
+      operationId: openDispute
+      tags: [disputes]
+      summary: Open a dispute on an order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DisputeInput"
+      responses:
+        "201":
+          description: Dispute opened
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dispute"
+
+  /disputes/{id}:
+    get:
+      operationId: getDispute
+      tags: [disputes]
+      summary: Get dispute details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Dispute detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dispute"
+
+  /disputes/{id}/reply:
+    post:
+      operationId: replyToDispute
+      tags: [disputes]
+      summary: Seller replies to dispute
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DisputeReplyInput"
+      responses:
+        "200":
+          description: Reply added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dispute"
+
+  # ─── NOTIFICATIONS ───
+  /notifications:
+    get:
+      operationId: listNotifications
+      tags: [notifications]
+      summary: Get user notifications
+      parameters:
+        - name: unread_only
+          in: query
+          schema:
+            type: boolean
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Notifications
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedNotifications"
+
+  /notifications/read-all:
+    post:
+      operationId: markAllNotificationsRead
+      tags: [notifications]
+      summary: Mark all notifications as read
+      responses:
+        "200":
+          description: All marked read
+
+  /notifications/{id}/read:
+    post:
+      operationId: markNotificationRead
+      tags: [notifications]
+      summary: Mark notification as read
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Marked read
+
+  # ─── WISHLIST ───
+  /wishlist:
+    get:
+      operationId: getWishlist
+      tags: [wishlist]
+      summary: Get user wishlist
+      responses:
+        "200":
+          description: Wishlist items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ServiceCard"
+
+  /wishlist/{serviceId}:
+    post:
+      operationId: addToWishlist
+      tags: [wishlist]
+      summary: Add service to wishlist
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "201":
+          description: Added to wishlist
+
+    delete:
+      operationId: removeFromWishlist
+      tags: [wishlist]
+      summary: Remove service from wishlist
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Removed
+
+  # ─── COUPONS ───
+  /coupons:
+    get:
+      operationId: listCoupons
+      tags: [coupons]
+      summary: List seller's coupons
+      responses:
+        "200":
+          description: Coupons list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Coupon"
+
+    post:
+      operationId: createCoupon
+      tags: [coupons]
+      summary: Create a coupon (seller only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CouponInput"
+      responses:
+        "201":
+          description: Coupon created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Coupon"
+
+  /coupons/validate:
+    post:
+      operationId: validateCoupon
+      tags: [coupons]
+      summary: Validate a coupon code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CouponValidateInput"
+      responses:
+        "200":
+          description: Coupon validation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CouponValidation"
+
+  # ─── STATS & ANALYTICS ───
+  /stats/platform:
+    get:
+      operationId: getPlatformStats
+      tags: [stats]
+      summary: Get platform-wide stats (homepage counters)
+      responses:
+        "200":
+          description: Platform statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformStats"
+
+  /stats/seller:
+    get:
+      operationId: getSellerStats
+      tags: [stats]
+      summary: Get seller analytics dashboard data
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [daily, weekly, monthly, yearly]
+            default: monthly
+      responses:
+        "200":
+          description: Seller analytics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SellerStats"
+
+  # ─── LEADERBOARD ───
+  /leaderboard:
+    get:
+      operationId: getLeaderboard
+      tags: [leaderboard]
+      summary: Get seller leaderboard
+      parameters:
+        - name: wilaya_id
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Leaderboard
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LeaderboardEntry"
+
+  # ─── ADMIN ───
+  /admin/stats:
+    get:
+      operationId: getAdminStats
+      tags: [admin]
+      summary: Admin dashboard statistics
+      parameters:
+        - name: wilaya_id
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [daily, weekly, monthly, yearly]
+            default: monthly
+      responses:
+        "200":
+          description: Admin dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminStats"
+
+  /admin/users:
+    get:
+      operationId: adminListUsers
+      tags: [admin]
+      summary: Admin list all users
+      parameters:
+        - name: role
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: wilaya_id
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: status
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: q
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Users list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedUsers"
+
+  /admin/users/{id}/ban:
+    post:
+      operationId: adminBanUser
+      tags: [admin]
+      summary: Ban a user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BanInput"
+      responses:
+        "200":
+          description: User banned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /admin/users/{id}/unban:
+    post:
+      operationId: adminUnbanUser
+      tags: [admin]
+      summary: Unban a user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User unbanned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /admin/services/pending:
+    get:
+      operationId: adminListPendingServices
+      tags: [admin]
+      summary: Admin list pending services for moderation
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Pending services
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedServices"
+
+  /admin/services/{id}/approve:
+    post:
+      operationId: adminApproveService
+      tags: [admin]
+      summary: Approve a service
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Service approved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+
+  /admin/services/{id}/reject:
+    post:
+      operationId: adminRejectService
+      tags: [admin]
+      summary: Reject a service
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RejectionInput"
+      responses:
+        "200":
+          description: Service rejected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+
+  /admin/disputes/{id}/resolve:
+    post:
+      operationId: adminResolveDispute
+      tags: [admin]
+      summary: Admin resolves a dispute
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DisputeResolutionInput"
+      responses:
+        "200":
+          description: Dispute resolved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dispute"
+
+  /admin/withdrawals:
+    get:
+      operationId: adminListWithdrawals
+      tags: [admin]
+      summary: Admin list withdrawal requests
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Withdrawal requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedWithdrawals"
+
+  /admin/withdrawals/{id}/process:
+    post:
+      operationId: adminProcessWithdrawal
+      tags: [admin]
+      summary: Admin processes withdrawal request
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WithdrawalProcessInput"
+      responses:
+        "200":
+          description: Withdrawal processed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WithdrawalRequest"
+
+  /admin/wilayas/stats:
+    get:
+      operationId: adminGetAllWilayaStats
+      tags: [admin]
+      summary: Admin get stats for all 58 wilayas
+      responses:
+        "200":
+          description: All wilaya stats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WilayaStats"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    # ─── WILAYA ───
+    Wilaya:
+      type: object
+      required: [id, code, name_fr, name_ar, is_pilot, is_active]
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+        name_fr:
+          type: string
+        name_ar:
+          type: string
+        region:
+          type: ["string", "null"]
+        is_pilot:
+          type: boolean
+        is_active:
+          type: boolean
+
+    WilayaDetail:
+      allOf:
+        - $ref: "#/components/schemas/Wilaya"
+        - type: object
+          properties:
+            sellers_count:
+              type: integer
+            services_count:
+              type: integer
+            orders_count:
+              type: integer
+            top_category:
+              type: ["string", "null"]
+
+    WilayaStats:
+      type: object
+      required: [wilaya_id, wilaya_name_fr, sellers_count, services_count, orders_count, revenue_total, disputes_count]
+      properties:
+        wilaya_id:
+          type: integer
+        wilaya_name_fr:
+          type: string
+        wilaya_name_ar:
+          type: string
+        sellers_count:
+          type: integer
+        services_count:
+          type: integer
+        orders_count:
+          type: integer
+        revenue_total:
+          type: number
+        disputes_count:
+          type: integer
+        top_category:
+          type: ["string", "null"]
+
+    WilayaChangeInput:
+      type: object
+      required: [requested_wilaya_id, reason]
+      properties:
+        requested_wilaya_id:
+          type: integer
+        reason:
+          type: string
+
+    WilayaChangeRequest:
+      type: object
+      required: [id, seller_id, current_wilaya_id, requested_wilaya_id, reason, status]
+      properties:
+        id:
+          type: integer
+        seller_id:
+          type: integer
+        current_wilaya_id:
+          type: integer
+        requested_wilaya_id:
+          type: integer
+        reason:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+        admin_note:
+          type: ["string", "null"]
+        decided_at:
+          type: ["string", "null"]
+        created_at:
+          type: string
+
+    # ─── AUTH ───
+    RegisterInput:
+      type: object
+      required: [name, email, password, role, wilaya_id]
+      properties:
+        name:
+          type: string
+          minLength: 2
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        role:
+          type: string
+          enum: [client, seller]
+        wilaya_id:
+          type: integer
+        phone:
+          type: ["string", "null"]
+        bio:
+          type: ["string", "null"]
+
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      required: [user, token]
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        token:
+          type: string
+
+    # ─── USER ───
+    User:
+      type: object
+      required: [id, name, email, role, wilaya_id, created_at]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [client, seller, admin]
+        wilaya_id:
+          type: integer
+        wilaya_name_fr:
+          type: ["string", "null"]
+        avatar:
+          type: ["string", "null"]
+        phone:
+          type: ["string", "null"]
+        bio:
+          type: ["string", "null"]
+        verified_at:
+          type: ["string", "null"]
+        banned_at:
+          type: ["string", "null"]
+        language_preference:
+          type: string
+          enum: [fr, ar, en]
+          default: fr
+        trust_score:
+          type: ["number", "null"]
+        referral_code:
+          type: ["string", "null"]
+        created_at:
+          type: string
+
+    UserProfile:
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - type: object
+          properties:
+            services_count:
+              type: integer
+            avg_rating:
+              type: ["number", "null"]
+            reviews_count:
+              type: integer
+            completed_orders:
+              type: integer
+            trust_label:
+              type: ["string", "null"]
+            badges:
+              type: array
+              items:
+                $ref: "#/components/schemas/Badge"
+
+    ProfileUpdate:
+      type: object
+      properties:
+        name:
+          type: ["string", "null"]
+        phone:
+          type: ["string", "null"]
+        bio:
+          type: ["string", "null"]
+        avatar:
+          type: ["string", "null"]
+        language_preference:
+          type: ["string", "null"]
+        whatsapp_phone:
+          type: ["string", "null"]
+
+    PaginatedUsers:
+      type: object
+      required: [data, total, page, limit]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+
+    BanInput:
+      type: object
+      required: [reason]
+      properties:
+        reason:
+          type: string
+
+    Badge:
+      type: object
+      required: [id, name_fr, icon, color]
+      properties:
+        id:
+          type: integer
+        name_fr:
+          type: string
+        name_ar:
+          type: ["string", "null"]
+        icon:
+          type: string
+        color:
+          type: string
+
+    # ─── CATEGORY ───
+    Category:
+      type: object
+      required: [id, name_fr, slug, is_active]
+      properties:
+        id:
+          type: integer
+        name_fr:
+          type: string
+        name_ar:
+          type: ["string", "null"]
+        slug:
+          type: string
+        icon:
+          type: ["string", "null"]
+        parent_id:
+          type: ["integer", "null"]
+        sort_order:
+          type: integer
+        is_active:
+          type: boolean
+
+    CategoryWithCount:
+      allOf:
+        - $ref: "#/components/schemas/Category"
+        - type: object
+          required: [services_count]
+          properties:
+            services_count:
+              type: integer
+
+    # ─── SERVICE ───
+    ServiceCard:
+      type: object
+      required: [id, title_fr, price, price_type, delivery_days, seller_id, seller_name, wilaya_id, wilaya_name_fr, category_id, status, created_at]
+      properties:
+        id:
+          type: integer
+        title_fr:
+          type: string
+        title_ar:
+          type: ["string", "null"]
+        price:
+          type: number
+        price_type:
+          type: string
+          enum: [fixed, hourly, negotiable]
+        delivery_days:
+          type: integer
+        seller_id:
+          type: integer
+        seller_name:
+          type: string
+        seller_avatar:
+          type: ["string", "null"]
+        seller_verified:
+          type: boolean
+        seller_trust_score:
+          type: ["number", "null"]
+        wilaya_id:
+          type: integer
+        wilaya_name_fr:
+          type: string
+        category_id:
+          type: integer
+        category_name_fr:
+          type: ["string", "null"]
+        images:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+        is_featured:
+          type: boolean
+        avg_rating:
+          type: ["number", "null"]
+        reviews_count:
+          type: integer
+        views_count:
+          type: integer
+        created_at:
+          type: string
+
+    ServiceDetail:
+      allOf:
+        - $ref: "#/components/schemas/ServiceCard"
+        - type: object
+          properties:
+            description_fr:
+              type: ["string", "null"]
+            description_ar:
+              type: ["string", "null"]
+            seller:
+              $ref: "#/components/schemas/UserProfile"
+            reviews:
+              type: array
+              items:
+                $ref: "#/components/schemas/Review"
+
+    Service:
+      allOf:
+        - $ref: "#/components/schemas/ServiceCard"
+        - type: object
+          properties:
+            description_fr:
+              type: ["string", "null"]
+            description_ar:
+              type: ["string", "null"]
+            rejection_reason:
+              type: ["string", "null"]
+
+    ServiceInput:
+      type: object
+      required: [title_fr, category_id, price, price_type, delivery_days]
+      properties:
+        title_fr:
+          type: string
+          minLength: 5
+        title_ar:
+          type: ["string", "null"]
+        description_fr:
+          type: ["string", "null"]
+        description_ar:
+          type: ["string", "null"]
+        category_id:
+          type: integer
+        price:
+          type: number
+          minimum: 0
+        price_type:
+          type: string
+          enum: [fixed, hourly, negotiable]
+        delivery_days:
+          type: integer
+          minimum: 1
+        images:
+          type: array
+          items:
+            type: string
+
+    ServiceUpdate:
+      type: object
+      properties:
+        title_fr:
+          type: ["string", "null"]
+        title_ar:
+          type: ["string", "null"]
+        description_fr:
+          type: ["string", "null"]
+        description_ar:
+          type: ["string", "null"]
+        price:
+          type: ["number", "null"]
+        price_type:
+          type: ["string", "null"]
+        delivery_days:
+          type: ["integer", "null"]
+        images:
+          type: array
+          items:
+            type: string
+
+    PaginatedServices:
+      type: object
+      required: [data, total, page, limit]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ServiceCard"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+
+    # ─── SEARCH ───
+    SearchResults:
+      type: object
+      required: [data, total, page, limit, query]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ServiceCard"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        query:
+          type: string
+
+    AutocompleteResults:
+      type: object
+      required: [wilayas, categories, services]
+      properties:
+        wilayas:
+          type: array
+          items:
+            $ref: "#/components/schemas/Wilaya"
+        categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/Category"
+        services:
+          type: array
+          items:
+            type: object
+            required: [id, title_fr]
+            properties:
+              id:
+                type: integer
+              title_fr:
+                type: string
+
+    # ─── ORDER ───
+    Order:
+      type: object
+      required: [id, client_id, service_id, seller_id, wilaya_id, status, total_price, commission_amount, payment_method, payment_status, created_at]
+      properties:
+        id:
+          type: integer
+        client_id:
+          type: integer
+        service_id:
+          type: integer
+        seller_id:
+          type: integer
+        wilaya_id:
+          type: integer
+        status:
+          type: string
+          enum: [pending, accepted, in_progress, delivered, completed, disputed, cancelled, refunded]
+        total_price:
+          type: number
+        commission_amount:
+          type: number
+        payment_method:
+          type: string
+          enum: [paypal, cib, baridimob, dahabia]
+        payment_status:
+          type: string
+          enum: [pending, confirmed, rejected, refunded]
+        receipt_image:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+        delivered_at:
+          type: ["string", "null"]
+        auto_complete_at:
+          type: ["string", "null"]
+        cancellation_reason:
+          type: ["string", "null"]
+        contract_signed_client:
+          type: boolean
+        contract_signed_seller:
+          type: boolean
+        created_at:
+          type: string
+
+    OrderDetail:
+      allOf:
+        - $ref: "#/components/schemas/Order"
+        - type: object
+          properties:
+            service:
+              $ref: "#/components/schemas/ServiceCard"
+            client:
+              $ref: "#/components/schemas/User"
+            seller:
+              $ref: "#/components/schemas/User"
+            contract:
+              $ref: "#/components/schemas/DigitalContract"
+            escrow:
+              $ref: "#/components/schemas/EscrowTransaction"
+            review:
+              $ref: "#/components/schemas/Review"
+
+    OrderInput:
+      type: object
+      required: [service_id, payment_method]
+      properties:
+        service_id:
+          type: integer
+        payment_method:
+          type: string
+          enum: [paypal, cib, baridimob, dahabia]
+        notes:
+          type: ["string", "null"]
+        coupon_code:
+          type: ["string", "null"]
+
+    DeliveryInput:
+      type: object
+      required: [delivery_message]
+      properties:
+        delivery_message:
+          type: string
+        file_urls:
+          type: array
+          items:
+            type: string
+
+    CancelInput:
+      type: object
+      required: [reason]
+      properties:
+        reason:
+          type: string
+
+    PaginatedOrders:
+      type: object
+      required: [data, total, page, limit]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+
+    DigitalContract:
+      type: object
+      required: [id, order_id, is_locked]
+      properties:
+        id:
+          type: integer
+        order_id:
+          type: integer
+        content_fr:
+          type: ["string", "null"]
+        client_signed_at:
+          type: ["string", "null"]
+        seller_signed_at:
+          type: ["string", "null"]
+        client_ip:
+          type: ["string", "null"]
+        seller_ip:
+          type: ["string", "null"]
+        pdf_url:
+          type: ["string", "null"]
+        qr_verification_code:
+          type: ["string", "null"]
+        is_locked:
+          type: boolean
+
+    EscrowTransaction:
+      type: object
+      required: [id, order_id, amount, commission_amount, status]
+      properties:
+        id:
+          type: integer
+        order_id:
+          type: integer
+        amount:
+          type: number
+        commission_amount:
+          type: number
+        status:
+          type: string
+          enum: [held, released, refunded, disputed, partially_refunded]
+        held_at:
+          type: ["string", "null"]
+        released_at:
+          type: ["string", "null"]
+        auto_release_at:
+          type: ["string", "null"]
+
+    # ─── REVIEW ───
+    Review:
+      type: object
+      required: [id, order_id, client_id, seller_id, rating, created_at]
+      properties:
+        id:
+          type: integer
+        order_id:
+          type: integer
+        client_id:
+          type: integer
+        seller_id:
+          type: integer
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        body:
+          type: ["string", "null"]
+        is_flagged:
+          type: boolean
+        seller_reply:
+          type: ["string", "null"]
+        reply_at:
+          type: ["string", "null"]
+        client_name:
+          type: ["string", "null"]
+        client_avatar:
+          type: ["string", "null"]
+        created_at:
+          type: string
+
+    ReviewInput:
+      type: object
+      required: [order_id, rating]
+      properties:
+        order_id:
+          type: integer
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        body:
+          type: ["string", "null"]
+
+    ReviewReplyInput:
+      type: object
+      required: [reply]
+      properties:
+        reply:
+          type: string
+
+    PaginatedReviews:
+      type: object
+      required: [data, total, page, limit, avg_rating]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Review"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        avg_rating:
+          type: number
+
+    # ─── WALLET ───
+    Wallet:
+      type: object
+      required: [id, seller_id, balance, pending_balance, total_earned, total_withdrawn]
+      properties:
+        id:
+          type: integer
+        seller_id:
+          type: integer
+        balance:
+          type: number
+        pending_balance:
+          type: number
+        total_earned:
+          type: number
+        total_withdrawn:
+          type: number
+        last_transaction_at:
+          type: ["string", "null"]
+
+    WalletTransaction:
+      type: object
+      required: [id, wallet_id, type, amount, created_at]
+      properties:
+        id:
+          type: integer
+        wallet_id:
+          type: integer
+        type:
+          type: string
+          enum: [credit, debit, hold, release, penalty]
+        amount:
+          type: number
+        description:
+          type: ["string", "null"]
+        created_at:
+          type: string
+
+    PaginatedWalletTransactions:
+      type: object
+      required: [data, total, page, limit]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/WalletTransaction"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+
+    WithdrawalInput:
+      type: object
+      required: [amount, method]
+      properties:
+        amount:
+          type: number
+          minimum: 1000
+        method:
+          type: string
+          enum: [cib, baridimob, dahabia, paypal]
+        account_details:
+          type: string
+
+    WithdrawalRequest:
+      type: object
+      required: [id, seller_id, amount, method, status, created_at]
+      properties:
+        id:
+          type: integer
+        seller_id:
+          type: integer
+        amount:
+          type: number
+        method:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, rejected, processed]
+        admin_note:
+          type: ["string", "null"]
+        processed_at:
+          type: ["string", "null"]
+        created_at:
+          type: string
+
+    PaginatedWithdrawals:
+      type: object
+      required: [data, total, page, limit]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/WithdrawalRequest"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+
+    WithdrawalProcessInput:
+      type: object
+      required: [action]
+      properties:
+        action:
+          type: string
+          enum: [approve, reject, process]
+        admin_note:
+          type: ["string", "null"]
+
+    # ─── DISPUTE ───
+    Dispute:
+      type: object
+      required: [id, order_id, client_id, seller_id, reason, status, created_at]
+      properties:
+        id:
+          type: integer
+        order_id:
+          type: integer
+        client_id:
+          type: integer
+        seller_id:
+          type: integer
+        reason:
+          type: string
+        evidence_files:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum: [open, seller_replied, admin_review, resolved]
+        admin_decision:
+          type: ["string", "null"]
+        refund_amount:
+          type: ["number", "null"]
+        resolved_at:
+          type: ["string", "null"]
+        created_at:
+          type: string
+
+    DisputeInput:
+      type: object
+      required: [order_id, reason]
+      properties:
+        order_id:
+          type: integer
+        reason:
+          type: string
+        evidence_files:
+          type: array
+          items:
+            type: string
+
+    DisputeReplyInput:
+      type: object
+      required: [reply]
+      properties:
+        reply:
+          type: string
+        evidence_files:
+          type: array
+          items:
+            type: string
+
+    DisputeResolutionInput:
+      type: object
+      required: [admin_decision]
+      properties:
+        admin_decision:
+          type: string
+          enum: [full_refund, partial_refund, reject]
+        refund_amount:
+          type: ["number", "null"]
+        note:
+          type: ["string", "null"]
+
+    PaginatedDisputes:
+      type: object
+      required: [data, total, page, limit]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Dispute"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+
+    # ─── NOTIFICATIONS ───
+    Notification:
+      type: object
+      required: [id, user_id, type, title, is_read, created_at]
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        type:
+          type: string
+        title:
+          type: string
+        body:
+          type: ["string", "null"]
+        link:
+          type: ["string", "null"]
+        is_read:
+          type: boolean
+        created_at:
+          type: string
+
+    PaginatedNotifications:
+      type: object
+      required: [data, total, page, limit, unread_count]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Notification"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        unread_count:
+          type: integer
+
+    # ─── COUPON ───
+    Coupon:
+      type: object
+      required: [id, seller_id, code, discount_type, discount_value, is_active, created_at]
+      properties:
+        id:
+          type: integer
+        seller_id:
+          type: integer
+        code:
+          type: string
+        discount_type:
+          type: string
+          enum: [percentage, fixed]
+        discount_value:
+          type: number
+        usage_limit:
+          type: ["integer", "null"]
+        used_count:
+          type: integer
+        expires_at:
+          type: ["string", "null"]
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+
+    CouponInput:
+      type: object
+      required: [code, discount_type, discount_value]
+      properties:
+        code:
+          type: string
+          minLength: 3
+        discount_type:
+          type: string
+          enum: [percentage, fixed]
+        discount_value:
+          type: number
+          minimum: 0
+        usage_limit:
+          type: ["integer", "null"]
+        expires_at:
+          type: ["string", "null"]
+
+    CouponValidateInput:
+      type: object
+      required: [code, service_id]
+      properties:
+        code:
+          type: string
+        service_id:
+          type: integer
+
+    CouponValidation:
+      type: object
+      required: [valid]
+      properties:
+        valid:
+          type: boolean
+        discount_type:
+          type: ["string", "null"]
+        discount_value:
+          type: ["number", "null"]
+        final_price:
+          type: ["number", "null"]
+        error:
+          type: ["string", "null"]
+
+    # ─── STATS ───
+    PlatformStats:
+      type: object
+      required: [active_sellers, total_services, wilayas_covered, orders_completed]
+      properties:
+        active_sellers:
+          type: integer
+        total_services:
+          type: integer
+        wilayas_covered:
+          type: integer
+        orders_completed:
+          type: integer
+
+    SellerStats:
+      type: object
+      required: [period, revenue_total, orders_total, orders_completed, avg_rating, views_total, completion_rate]
+      properties:
+        period:
+          type: string
+        revenue_total:
+          type: number
+        orders_total:
+          type: integer
+        orders_completed:
+          type: integer
+        avg_rating:
+          type: number
+        views_total:
+          type: integer
+        completion_rate:
+          type: number
+        revenue_chart:
+          type: array
+          items:
+            type: object
+            required: [label, value]
+            properties:
+              label:
+                type: string
+              value:
+                type: number
+        orders_chart:
+          type: array
+          items:
+            type: object
+            required: [label, value]
+            properties:
+              label:
+                type: string
+              value:
+                type: integer
+        top_services:
+          type: array
+          items:
+            type: object
+            required: [service_id, title_fr, revenue, orders_count]
+            properties:
+              service_id:
+                type: integer
+              title_fr:
+                type: string
+              revenue:
+                type: number
+              orders_count:
+                type: integer
+
+    AdminStats:
+      type: object
+      required: [total_users, total_sellers, total_orders, total_revenue, pending_services, open_disputes, pending_withdrawals]
+      properties:
+        total_users:
+          type: integer
+        total_sellers:
+          type: integer
+        total_orders:
+          type: integer
+        total_revenue:
+          type: number
+        pending_services:
+          type: integer
+        open_disputes:
+          type: integer
+        pending_withdrawals:
+          type: integer
+        orders_chart:
+          type: array
+          items:
+            type: object
+            required: [label, value]
+            properties:
+              label:
+                type: string
+              value:
+                type: integer
+        revenue_chart:
+          type: array
+          items:
+            type: object
+            required: [label, value]
+            properties:
+              label:
+                type: string
+              value:
+                type: number
+
+    # ─── LEADERBOARD ───
+    LeaderboardEntry:
+      type: object
+      required: [rank, seller_id, seller_name, wilaya_name_fr, avg_rating, completed_orders, trust_score]
+      properties:
+        rank:
+          type: integer
+        seller_id:
+          type: integer
+        seller_name:
+          type: string
+        seller_avatar:
+          type: ["string", "null"]
+        wilaya_name_fr:
+          type: string
+        avg_rating:
+          type: number
+        completed_orders:
+          type: integer
+        trust_score:
+          type: number
+        trust_label:
+          type: ["string", "null"]
+        badge_color:
+          type: ["string", "null"]
+
+    RejectionInput:
+      type: object
+      required: [reason]
+      properties:
+        reason:
+          type: string

@@ -1,0 +1,703 @@
+Build a complete, production-ready, ultra-professional full-stack e-commerce web platform for Algerian university services. This is the NUMBER ONE platform in Algeria — covering all 58 official wilayas, fully featured, legally compliant, secure, scalable, and launch-ready. Every single feature must be production-grade, clean-coded, accessible, and tested.
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+TECH STACK
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Backend: Laravel 11 (PHP) — REST API, Laravel Sanctum, Spatie Permission (RBAC)
+Database: Neon.tech (PostgreSQL serverless)
+Cache & Sessions: Redis (Laravel Redis driver) — mandatory
+Queue Workers: Laravel Horizon + Redis — all async jobs
+Frontend: Next.js 14+ TypeScript, App Router, Tailwind CSS, Shadcn/ui
+Real-time: Laravel Reverb (WebSockets) — chat + live notifications
+File storage: Cloudinary (free tier) — images, portfolios, documents, contracts
+Email: Resend.com (free tier) — all transactional emails via queued jobs
+WhatsApp: Twilio WhatsApp Business API (free sandbox) — order notifications
+Payments: PayPal SDK + CIB/BaridiMob/Dahabia receipt upload + Satim QR code generator
+Deployment: Vercel (Next.js) + Railway (Laravel) + Upstash (Redis managed)
+PWA: next-pwa — fully installable Android/iOS, offline fallback
+i18n: next-intl — French (default), Arabic (full RTL), English
+API docs: Swagger/OpenAPI auto-generated from Laravel routes
+Monitoring: Laravel Telescope (dev) + Sentry (prod) + UptimeRobot (free)
+Backup: pg_dump daily → Cloudflare R2 (free tier)
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+WILAYA SYSTEM — CORE NATIONAL FEATURE
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Seed all 58 official Algerian wilayas:
+01-Adrar, 02-Chlef, 03-Laghouat, 04-Oum El Bouaghi, 05-Batna, 06-Béjaïa,
+07-Biskra, 08-Béchar, 09-Blida, 10-Bouira, 11-Tamanrasset, 12-Tébessa,
+13-Tlemcen, 14-Tiaret, 15-Tizi Ouzou, 16-Alger, 17-Djelfa, 18-Jijel,
+19-Sétif, 20-Saïda, 21-Skikda, 22-Sidi Bel Abbès, 23-Annaba, 24-Guelma,
+25-Constantine, 26-Médéa, 27-Mostaganem, 28-M'Sila, 29-Mascara, 30-Ouargla,
+31-Oran, 32-El Bayadh, 33-Illizi, 34-Bordj Bou Arréridj, 35-Boumerdès,
+36-El Tarf, 37-Tindouf, 38-Tissemsilt, 39-El Oued, 40-Khenchela,
+41-Souk Ahras, 42-Tipaza, 43-Mila, 44-Aïn Defla, 45-Naâma, 46-Aïn Témouchent,
+47-Ghardaïa, 48-Relizane, 49-Timimoun, 50-Bordj Badji Mokhtar, 51-Ouled Djellal,
+52-Béni Abbès, 53-In Salah, 54-In Guezzam, 55-Touggourt, 56-Djanet,
+57-El M'Ghair, 58-El Meniaa
+
+WILAYA RULES (enforced at backend policy level):
+- Every seller MUST select wilaya at registration — permanently linked, stored as wilaya_id
+- Every service/order/banner/commission has wilaya_id as required foreign key
+- Sellers can only publish services in their own wilaya — policy rejects any other wilaya_id
+- Sellers can request wilaya change — goes to admin for manual approval (wilaya_change_requests table)
+- Admin views full statistics broken down per wilaya
+- 5 pilot wilayas for beta launch: Alger (16), Oran (31), Constantine (25), Tlemcen (13), Tizi Ouzou (15)
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+COMPLETE DATABASE SCHEMA
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+wilayas (id, code [01–58], name_fr, name_ar, region, is_pilot, is_active)
+users (id, name, email, password, role, wilaya_id, avatar, phone, bio, verified_at, banned_at, banned_reason, referral_code, referred_by, two_factor_secret, two_factor_enabled, language_preference, client_trust_score, whatsapp_phone, google_id)
+roles, permissions (Spatie)
+categories (id, name_fr, name_ar, slug, icon, parent_id, sort_order, is_active)
+services (id, seller_id, category_id, wilaya_id, title_fr, title_ar, description_fr, description_ar, price, price_type [fixed/hourly/negotiable], images[], status [pending/approved/rejected/banned], delivery_days, is_featured, featured_until, views_count, clicks_count, conversion_rate, rejection_reason, is_plagiarism_checked, search_vector)
+orders (id, client_id, service_id, seller_id, wilaya_id, status [pending/accepted/in_progress/delivered/completed/disputed/cancelled/refunded], total_price, commission_amount, payment_method, payment_status, receipt_image, notes, delivered_at, auto_complete_at, cancellation_reason, contract_signed_client, contract_signed_seller)
+order_items, messages, conversations
+reviews (id, order_id, client_id, seller_id, rating, body, sentiment_score, toxicity_score, is_flagged, seller_reply, reply_at)
+client_ratings (id, order_id, seller_id, client_id, rating, comment, created_at)
+notifications, invoices, appointments, availability_slots
+coupons (id, seller_id, code, discount_type, discount_value, usage_limit, used_count, expires_at, is_active)
+disputes (id, order_id, client_id, seller_id, reason, evidence_files[], status [open/seller_replied/admin_review/resolved], admin_decision, refund_amount, resolved_at)
+reports (id, reporter_id, reported_id, type, reason, status, admin_note)
+activity_logs (id, user_id, action, model_type, model_id, ip_address, user_agent, created_at)
+seller_verifications (id, seller_id, document_type, document_image, ocr_extracted_text, status, admin_note, reviewed_by, reviewed_at)
+badges (id, name_fr, name_ar, icon, condition_type, condition_value, color)
+user_badges (user_id, badge_id, awarded_at)
+referrals (id, referrer_id, referred_id, discount_code, used_at, commission_earned)
+blog_posts (id, author_id, title_fr, title_ar, body_fr, body_ar, cover_image, status, wilaya_id, tags[], views_count, published_at)
+banners (id, title, image, link, wilaya_id, position, is_active, starts_at, ends_at, click_count, impression_count)
+commissions (id, category_id, wilaya_id, percentage, effective_from, created_by)
+payments (id, order_id, method, amount, status, transaction_ref, confirmed_by, confirmed_at, satim_qr_code)
+wishlists (user_id, service_id, added_at)
+portfolios (id, seller_id, title, images[], description, created_at)
+wilaya_change_requests (id, seller_id, current_wilaya_id, requested_wilaya_id, reason, status, admin_note, decided_at)
+
+— ESCROW SYSTEM —
+escrow_transactions (id, order_id, amount, commission_amount, status [held/released/refunded/disputed/partially_refunded], held_at, released_at, released_by, release_reason, auto_release_at)
+
+— WALLET SYSTEM —
+seller_wallets (id, seller_id, balance, pending_balance, total_earned, total_withdrawn, last_transaction_at)
+wallet_transactions (id, wallet_id, type [credit/debit/hold/release/penalty], amount, reference_id, description, created_at)
+withdrawal_requests (id, seller_id, amount, method [cib/baridimob/dahabia/paypal], account_details_encrypted, status [pending/approved/rejected/processed], admin_note, processed_at)
+
+— DIGITAL CONTRACTS —
+digital_contracts (id, order_id, content_fr, content_ar, client_signed_at, seller_signed_at, client_ip, seller_ip, pdf_url, qr_verification_code, is_locked)
+delivery_files (id, order_id, seller_id, file_url, encryption_key, original_filename, mime_type, file_size, is_downloaded, downloaded_at, download_token, token_expires_at, download_count, max_downloads)
+delivery_certificates (id, order_id, pdf_url, qr_code, verification_url, issued_at, verified_count)
+cancellation_logs (id, order_id, cancelled_by, reason_type, reason_detail, penalty_amount, refund_amount, auto_triggered, notified_at)
+
+— AFFILIATE SYSTEM —
+affiliate_links (id, user_id, code, level [1/2/3], total_clicks, total_conversions, total_earned, is_active)
+affiliate_commissions (id, affiliate_id, referred_user_id, order_id, level, amount, status [pending/paid], paid_at)
+
+— TRUST & SECURITY —
+seller_trust_scores (id, seller_id, score [0-100], verification_score, rating_score, completion_rate_score, dispute_score, age_score, components_json, updated_at)
+fraud_flags (id, user_id, flag_type, severity, details_json, reviewed, reviewed_by, created_at)
+
+— API & INTEGRATIONS —
+api_keys (id, user_id, name, key_hash, permissions[], rate_limit, last_used_at, expires_at, is_active)
+webhook_endpoints (id, user_id, url, events[], secret, is_active, last_triggered_at)
+whatsapp_logs (id, user_id, phone, template, params_json, status, sent_at, error_message)
+
+— LAUNCH & ONBOARDING —
+beta_invitations (id, email, code, wilaya_id, used_at, invited_by, role)
+seller_onboarding_progress (id, seller_id, step_completed[], completed_at, mentor_id)
+waiting_list (id, email, wilaya_id, role, created_at, notified_at)
+
+— BACKUP & MONITORING —
+backup_logs (id, type [database/files], status, file_url, size_mb, duration_seconds, created_at)
+uptime_checks (id, endpoint, status, response_time_ms, checked_at)
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+ESCROW SYSTEM — TRUST FEATURE #1 (CRITICAL FOR ALGERIA)
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+This is the most critical trust feature. In Algeria, paying before receiving = huge psychological barrier. The escrow solves this entirely.
+
+COMPLETE FLOW:
+1. Client places order → selects payment method (PayPal / CIB / BaridiMob / Dahabia)
+2. Payment confirmed (by PayPal SDK instantly, or by admin for manual payments) → escrow_transaction created with status=held
+3. Seller receives notification → has 24h to accept or auto-cancel
+4. Seller accepts → digital contract auto-generated → both parties sign → status=in_progress
+5. Seller works → uploads deliverable files via secure delivery system → marks as delivered
+6. Client downloads files → has 72h to confirm or open dispute
+7a. Client confirms delivery → escrow released to seller wallet (minus platform commission) → status=released → certificate generated
+7b. Client opens dispute → escrow frozen → status=disputed → admin mediates
+7c. 72h pass without action → auto-release → scheduled job triggers
+8. Seller requests withdrawal from wallet → admin approves → transferred to CIB/BaridiMob/PayPal
+
+SELLER WALLET:
+- balance = confirmed released funds
+- pending_balance = held in escrow (not yet released)
+- Withdrawal minimum: 1000 DZD
+- Withdrawal methods: CIB bank transfer, BaridiMob, Dahabia, PayPal
+- Withdrawal processed within 48h by admin
+- Full wallet transaction history with CSV export
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+SECURE FILE DELIVERY SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Seller uploads deliverable (PDF, DOCX, ZIP, PPT, MP4) → Cloudinary private/authenticated URL
+- File linked to order_id in delivery_files table
+- Unique one-time download token generated per file (UUID + HMAC signature)
+- Token valid 48h or max 3 downloads, whichever comes first
+- Client only sees download button after order status = delivered
+- Every download logged: timestamp, IP, user-agent
+- AES-256 encryption on file metadata in DB
+- Admin can revoke access to any file at any time
+- Automatic virus scan simulation flag for ZIP files (admin must approve before client access)
+
+DELIVERY CERTIFICATE:
+- After client confirms reception → PDF certificate auto-generated
+- Certificate contains: order ID, service title, seller name + wilaya, client name, completion date, QR code
+- QR code links to public verification page: /verify/[certificate-id]
+- Certificate stored on Cloudinary, downloadable by both parties forever
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+DIGITAL MINI-CONTRACT
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Auto-generated when seller accepts an order
+- Contract includes: service title, description, price, delivery deadline, anti-plagiarism clause (mandatory for thesis/PPT sellers), refund policy, dispute resolution process, governing law (Algerian law, loi 18-05)
+- Both parties must click "J'accepte et je signe" before work begins — acceptance stored with IP + timestamp
+- Contract locked as tamper-proof PDF with embedded QR code (Cloudinary)
+- Available in French and Arabic (auto-generated in user's language preference)
+- Accessible from order detail page for both parties and admin forever
+- Contract ID referenced in every invoice and certificate
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+BIDIRECTIONAL RATING SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Client rates seller (existing reviews table):
+- 1–5 stars, written review, optional photo attachment
+- Seller can reply once to the review
+- Sentiment analysis via TextBlob queued job
+- Toxicity check via Perspective API before saving
+
+Seller rates client (new client_ratings table):
+- 1–5 stars, short comment (max 300 chars)
+- Client trust score updated automatically (average of all client_ratings)
+- Client trust score visible to sellers before accepting orders
+- Displayed on client profile as reliability badge: Excellent / Bon / Moyen / Mauvais
+- Admin can see full rating history for dispute resolution
+
+Leaderboard updated daily via scheduled job:
+- National top 20 sellers
+- Per-wilaya top 10 sellers
+- Based on: rating + completion rate + response time + order volume (weighted formula)
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+AUTOMATIC CANCELLATION & PENALTIES
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Scheduled Laravel jobs (every 15 minutes):
+- Order pending > 24h without seller acceptance → auto-cancel → full escrow refund to client
+- Order accepted, deadline passed + 24h grace → auto-flag → seller penalized 10% of order value → client notified to request refund
+- Order delivered, client inactive > 72h → auto-release escrow to seller
+- All auto-actions logged in cancellation_logs
+- Email + WhatsApp notifications sent to both parties on every auto-action
+
+Manual cancellation rules:
+- Client can cancel free within 2h of placing order (before seller accepts)
+- Client cancels after seller accepted → 20% penalty charged to client (goes to seller)
+- Seller cancels after accepting → 15% penalty from seller wallet → full refund to client
+- Admin can override any penalty
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+ALGERIAN LEGAL COMPLIANCE — LOI 18-05
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Full compliance with Algerian e-commerce law (Loi 18-05 du 10 mai 2018 relative au commerce électronique):
+
+- Pre-order mandatory display: total price including all fees + commission, seller identity and wilaya, delivery timeline, refund/cancellation conditions, contract terms summary
+- Legal mentions page (/mentions-legales): platform name, legal address, contact, registration number
+- General Terms of Service (CGU/CGV) in French and Arabic — must be accepted at registration (checkbox logged with timestamp)
+- Consumer right of retraction: 7 calendar days for services not yet started — full refund
+- All transaction data archived for 10 years (legal requirement in Algeria)
+- Invoice mandatory for every completed order — auto-generated PDF with sequential invoice number, seller tax info, platform name, legal stamps
+- Electronic signature framework: click-to-accept with IP + timestamp = legally valid in Algeria under loi 18-05 Art. 9
+- Data protection: user consent for data collection, right to access/delete personal data, no third-party data selling
+- Cookie consent banner: required for analytics/tracking
+- Anti-spam compliance: all marketing emails include unsubscribe link
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+PAYMENT SYSTEM — FULL ALGERIAN + INTERNATIONAL
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+PayPal SDK:
+- Online payment, instant confirmation
+- Webhook for payment.COMPLETED event → auto-confirm order
+
+Manual Algerian payments (CIB / BaridiMob / Dahabia):
+- Client shown payment instructions + RIB/phone number after order
+- Client uploads receipt photo (Cloudinary)
+- Admin reviews and confirms or rejects (with reason)
+- Satim QR code: generate a payment QR per order using Satim CIB API (if available) or simulated QR with order details encoded
+
+Seller withdrawals:
+- CIB bank transfer (RIB stored AES-encrypted)
+- BaridiMob (phone number)
+- Dahabia (card number stored encrypted)
+- PayPal (email)
+- Admin processes within 48h, marks as processed, notifies seller
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+AFFILIATE SYSTEM — 3 LEVELS
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Every user gets a unique affiliate link at registration.
+
+Level 1: User A invites User B → User A earns 5% of every order placed by User B (for 12 months)
+Level 2: User B invites User C → User A earns 2% of every order by User C
+Level 3: User C invites User D → User A earns 1% of every order by User D
+
+Commissions credited to affiliate wallet after escrow release.
+Affiliate dashboard: total clicks, conversions, earnings per level, monthly chart, payout history.
+Admin can configure commission rates and expiration per level.
+Minimum payout threshold: 500 DZD.
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+WHATSAPP BUSINESS NOTIFICATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Via Twilio WhatsApp Business API (free sandbox for testing, production requires verified business number):
+
+Templates:
+- order_confirmed: "Bonjour {name}, votre commande #{order_id} a été confirmée. Montant: {amount} DZD"
+- order_accepted: "Votre commande #{order_id} a été acceptée par {seller_name}. Livraison prévue: {deadline}"
+- delivery_ready: "Votre commande #{order_id} est prête. Téléchargez vos fichiers dans les 48h."
+- payment_received: "Paiement de {amount} DZD reçu pour la commande #{order_id}"
+- dispute_opened: "Un litige a été ouvert sur la commande #{order_id}. Répondez sous 48h."
+- withdrawal_processed: "Votre retrait de {amount} DZD a été traité."
+
+All WhatsApp sends are queued jobs — never block requests.
+User can disable WhatsApp notifications from profile settings.
+All sent messages logged in whatsapp_logs table.
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+SELLER TRUST SCORE SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Calculated automatically by scheduled job (daily), stored in seller_trust_scores:
+
+Components (weighted):
+- Identity verification: 20 points (verified = 20, unverified = 0)
+- Average rating (reviews): 25 points (5 stars = 25, 1 star = 5)
+- Order completion rate: 20 points (100% = 20, <50% = 0)
+- Dispute rate: 15 points (<2% disputes = 15, >20% = 0)
+- Account age: 10 points (>1 year = 10, <1 month = 2)
+- Response time: 10 points (<1h average = 10, >24h = 0)
+
+Score displayed as:
+- 85–100: "Vendeur d'Excellence" (gold badge)
+- 70–84: "Vendeur Fiable" (silver badge)
+- 50–69: "Vendeur Actif" (bronze badge)
+- <50: no badge, warning shown to clients
+
+Sellers flagged for fraud automatically if trust score drops below 30 → admin alert.
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+SELLER ONBOARDING PROGRAM
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Step-by-step guided onboarding after registration approval:
+1. Complete profile (photo, bio, phone, WhatsApp)
+2. Upload verification document
+3. Sign anti-plagiarism charter (if thesis/PPT category)
+4. Add first service with AI-assisted description
+5. Set availability calendar
+6. Share referral link
+
+Progress stored in seller_onboarding_progress.
+Until all steps completed: seller sees onboarding checklist banner on dashboard.
+First service of a new verified seller → automatically featured for 7 days (is_featured=true, featured_until=now+7days) → welcome email + WhatsApp.
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+ADVANCED SELLER ANALYTICS
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Seller dashboard analytics (all data from DB, no third-party):
+- Revenue chart: daily/weekly/monthly/yearly (bar + line)
+- Orders funnel: views → clicks → orders → completions (conversion rate)
+- Heatmap: views by hour of day and day of week (7x24 grid)
+- Ratings distribution: 1-5 star breakdown + trend
+- Revenue comparison: seller vs wilaya average vs national average
+- Top performing services: sorted by revenue / orders / views
+- Estimated next month revenue (linear regression on last 3 months)
+- Response time average + trend
+- Client return rate (% of clients who ordered again)
+- All charts exportable as PNG or CSV
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+PUBLIC API + WEBHOOKS
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Public REST API (for third-party integrators and mobile apps):
+- Authentication: Bearer API key (from api_keys table)
+- Rate limiting: 100 requests/minute per key (Redis rate limiter)
+- Endpoints: GET /api/v1/wilayas, /api/v1/services, /api/v1/categories, /api/v1/sellers/{id}
+- Swagger/OpenAPI documentation auto-generated at /api/docs
+- Versioned: /api/v1/ prefix
+- Response always JSON with standard envelope: { data, meta, errors }
+
+Webhooks (for sellers with advanced plan):
+- Events: order.created, order.completed, order.disputed, payment.confirmed, escrow.released
+- Seller configures webhook URL in dashboard
+- HMAC-SHA256 signature on every webhook payload
+- Retry logic: 3 retries with exponential backoff on failure
+- Delivery logs visible in seller dashboard
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+PERFORMANCE — REDIS + QUEUE + CACHE STRATEGY
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Redis usage:
+- Sessions (all users)
+- Rate limiting (API + web routes)
+- Cache: wilaya stats, leaderboard, homepage data, category counts (TTL configurable)
+- Queue backend (all async jobs)
+- Presence channels for real-time (Reverb)
+- OTP codes for 2FA (TTL: 5 minutes)
+
+Laravel Horizon:
+- Monitors all queues with real-time dashboard (/horizon — admin only)
+- Queue priorities: critical (payments, notifications) > default (emails, AI) > low (analytics, backups)
+
+Scheduled jobs (Laravel Scheduler):
+- every 15min: auto-cancellation check, auto-release check
+- every hour: trust score recalculation for flagged sellers
+- every day at 02:00: leaderboard update, backup database, sitemap regeneration
+- every day at 06:00: analytics aggregation for admin dashboard
+- every week: affiliate commission payout processing
+
+Cache strategy:
+- Next.js ISR: homepage (revalidate 5min), wilaya pages (10min), service pages (on-update)
+- Laravel Cache: wilaya stats (10min), leaderboard (1h), category list (30min)
+- No cache on: search results, user-specific data, cart, chat
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+ANTI-FRAUD SYSTEM — MAXIMUM SECURITY
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Escrow holds ALL payments — seller NEVER receives money for undelivered work
+- Seller identity verified: document upload + OCR + admin approval before first service
+- Anti-plagiarism charter: mandatory for thesis/PPT sellers, stored signed in DB
+- Dispute system: client opens → escrow frozen → seller has 48h to respond + upload proof → admin decides
+- Perspective API: toxicity check on every message and review before saving — auto-block if score > 0.85
+- Fraud pattern detection (scheduled job):
+  * Flag sellers with >15% dispute rate
+  * Flag accounts created same IP as banned account
+  * Flag services with identical descriptions (plagiarism detection via cosine similarity)
+  * Flag abnormal order patterns (100+ orders in 1 hour = bot detection)
+- All fraud flags stored in fraud_flags table → admin review queue
+- 2FA mandatory for all sellers (TOTP via Google Authenticator / Authy)
+- 2FA optional for clients (encouraged during onboarding)
+- IP logging on all sensitive actions: login, payment, contract signing, file download, withdrawal request
+- CSRF, XSS, SQL injection protection via Laravel defaults + Eloquent ORM
+- Rate limiting: 60 req/min authenticated, 20 req/min unauthenticated
+- AES-256 encryption for: bank account details, 2FA secrets, sensitive withdrawal data
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+AI INTEGRATIONS — 100% FREE
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Groq API — Llama 3 70B (free):
+→ 24/7 chatbot widget (FR/AR/EN): answers questions, recommends services by wilaya
+→ "Je cherche un créateur PPT à Tlemcen" → AI queries DB → real results returned
+→ Guides navigation, explains ordering, resolves common issues
+
+2. Hugging Face Inference API (free):
+→ Seller AI description generator: 5–10 keywords → full professional description in FR/AR/EN
+→ Auto-translation between FR/AR/EN for service titles and descriptions
+
+3. Google Gemini API (free):
+→ Client uploads thesis PDF → AI generates structured abstract + chapter summaries
+→ Upload PPT slides → AI generates soutenance coaching tips + improvement suggestions
+
+4. TextBlob + VADER (open-source, no API key):
+→ Sentiment analysis on every submitted review → score stored in reviews.sentiment_score
+→ Auto-flag very negative or suspicious sentiment → admin moderation queue
+
+5. Tesseract.js (open-source):
+→ OCR on seller identity document uploads: extract text from national ID / student card images
+→ Extracted text displayed to admin alongside uploaded image for faster verification
+
+6. Perspective API — Google (free):
+→ Real-time toxicity scoring on every chat message and review before saving
+→ Auto-block messages with toxicity > threshold → log blocked content for admin
+
+7. TensorFlow.js — collaborative filtering (open-source):
+→ Personalized recommendation engine trained on order history + browsing behavior
+→ Wilaya-aware: prioritize services in client's own wilaya
+→ "Les étudiants de Tlemcen ont aussi consulté..." on homepage and service pages
+
+8. AI fraud detection (custom ML, TensorFlow.js):
+→ Behavioral analysis: detect abnormal patterns (bot activity, fake reviews, account farms)
+→ Cosine similarity on service descriptions to detect plagiarized listings
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+BACKUP & DISASTER RECOVERY
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Daily PostgreSQL dump at 02:00 via scheduled job → compressed → uploaded to Cloudflare R2 (free 10GB tier)
+- Backup logs stored in backup_logs table
+- Retention: 30 daily backups, 12 monthly backups
+- Restore procedure documented in README.md
+- UptimeRobot monitors: API health endpoint, frontend URL, WebSocket endpoint — alerts via email + WhatsApp if down
+- Health check endpoint: GET /api/health → returns DB status, Redis status, queue status, storage status
+- Laravel Telescope enabled in development (disabled in production)
+- Sentry integration for error tracking in production (free tier: 5000 errors/month)
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+ACCESSIBILITY — WCAG 2.1 AA
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+- All interactive elements have aria-label or aria-labelledby
+- Full keyboard navigation (Tab, Enter, Escape, Arrow keys)
+- Color contrast ratio minimum 4.5:1 for all text
+- Focus indicators visible on all focusable elements
+- Screen reader compatible (tested with NVDA and VoiceOver)
+- Font size adjustable via browser settings (no fixed px on body text)
+- Images have descriptive alt attributes
+- Forms have visible labels (no placeholder-only labels)
+- Error messages announced to screen readers via aria-live
+- Skip to main content link on all pages
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+GO-TO-MARKET — BETA LAUNCH STRATEGY
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Beta mode features (configurable by admin toggle):
+- Platform launches in BETA MODE for 5 pilot wilayas only (Alger, Oran, Constantine, Tlemcen, Tizi Ouzou)
+- All other wilayas see waiting list page: "Bientôt disponible dans votre wilaya — rejoignez la liste d'attente"
+- Waiting list: email + wilaya + role (client/seller) → stored in waiting_list table
+- Admin sends invitations via email with unique beta_code to unlock registration
+- Landing page (/lancement): countdown timer, feature highlights, waitlist form, social share buttons
+- Referral boost: during beta, referral commission doubled (10% level 1)
+- First 50 sellers per wilaya get "Fondateur" exclusive badge (permanent)
+- Admin dashboard shows: waitlist count per wilaya, conversion rate, invitation acceptance rate
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+HOME PAGE — NATIONAL MARKETPLACE
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Sections in exact order:
+1. Hero banner: "Le marché universitaire algérien n°1" — full-width search (wilaya dropdown + category + keyword) — search → /search?q=...&wilaya=...&category=...
+2. Stats bar: active sellers / total services / wilayas covered / orders completed (live from cache)
+3. "Parcourir par wilaya" — 58 wilaya chips, horizontally scrollable, instant filter
+4. "Services à la une" — admin-selected featured/sponsored services from all wilayas
+5. "Services près de chez vous" — auto-detect from profile wilaya or browser geolocation
+6. "Catégories populaires" — icon grid with service count per category
+7. "Nouveaux vendeurs vérifiés" — recently verified sellers with badges
+8. "Tendances en Algérie cette semaine" — most ordered services nationally, last 7 days
+9. "Explorer par wilaya" — 58 wilaya cards: name + code + seller count + service count + top category
+10. "Derniers services ajoutés" — infinite scroll, most recent services from all wilayas
+11. Blog / Actualités universitaires — latest 3 blog posts with cover images
+12. Trust section: "Pourquoi nous choisir" — escrow guarantee, verified sellers, 58 wilayas, legal compliance
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+WILAYA PAGES — /wilaya/[slug]
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+/wilaya/tlemcen → all services in Tlemcen
+/wilaya/oran/developpement-web → filtered by wilaya + category
+/wilaya/constantine/vendeurs → all sellers in Constantine
+
+Each wilaya page:
+- Wilaya name (FR + AR) + code + region + pilot badge if applicable
+- Live stats: sellers count, services count, most popular category, total orders
+- Filter bar: category, price range, rating, seller type, sort (newest / top rated / price asc / price desc)
+- Full paginated grid of all approved services in this wilaya
+- "Meilleurs vendeurs de [wilaya]" — top 5 rated sellers
+- "Catégories disponibles" — only categories with active sellers in this wilaya
+- Related wilayas (same region)
+- Dynamic SEO: title, description, og:image per wilaya
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+SEARCH SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+URL: /search?q=...&wilaya=...&category=...&min_price=...&max_price=...&rating=...&delivery=...&type=...&sort=...
+- Full-text search on title + description in FR and AR (PostgreSQL tsvector + GIN index)
+- Autocomplete: as user types → suggests matching wilayas + categories + services via debounced API call
+- No wilaya selected → national search across all 58
+- Wilaya selected → scoped search
+- Filters: wilaya, category, price range (DZD), minimum rating, max delivery days, price type, seller verification status
+- Sort: relevance / newest / top rated / price low-high / price high-low / most popular
+- Each result card shows: wilaya badge, seller name + avatar, rating + review count, price, delivery days, verification badge
+- No results → AI suggests related services via Groq
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+CLIENT INTERFACE
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Registration: email + password (verified via Resend email) or Google OAuth
+Profile: name, email, phone, avatar (Cloudinary), wilaya (any of 58), language preference, WhatsApp phone
+Dashboard tabs:
+- My orders (full status timeline with timestamps)
+- My wishlist / saved services
+- My appointments calendar (Google Calendar sync)
+- My reviews (submitted + received from sellers)
+- My referrals + affiliate earnings
+- My notifications (all types)
+- My trust score (client rating from sellers)
+
+Service comparison tool: compare up to 3 services side by side
+AI chatbot: floating widget, Groq Llama 3, FR/AR/EN, 24/7
+AI recommendations: wilaya-aware, based on browsing + order history
+Referral + affiliate program: 3-level commission
+QR code on each service page (qrcode.react) — shareable via WhatsApp
+Push notifications (browser Web Push API) + email (Resend) + WhatsApp (Twilio)
+Dark/Light mode (localStorage)
+PWA installable, offline fallback page
+Full RTL layout in Arabic
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+SELLER INTERFACE
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Registration flow:
+1. Fill form: name, email, phone, domain/category, WILAYA (required, dropdown of 58), bio
+2. Upload identity document (national ID / student card / professional certificate)
+3. Accept anti-plagiarism charter (mandatory for thesis/PPT)
+4. Status: pending → admin review → approved/rejected (email + WhatsApp sent)
+
+Seller features:
+- Permanent wilaya link — all services auto-tagged
+- "Vendeur Vérifié" badge on profile and every service card
+- Trust score displayed on profile (0–100 + label)
+- Wilaya change request system
+- Full service CRUD: add, edit, delete, duplicate — each pending admin approval
+- Service form: title (FR+AR), description (FR+AR), price + type, images (Cloudinary), delivery days, category
+- AI description generator: 5 keywords → full professional description (FR/AR/EN) via Hugging Face
+- Order management: full pipeline (pending → accepted → in_progress → delivered → completed)
+- Digital contract signing flow (built into order accept step)
+- Secure file upload for delivery (linked to order)
+- Real-time chat with clients (Laravel Reverb)
+- Public profile: /wilaya/[slug]/vendeurs/[username]
+- Portfolio gallery
+- Availability calendar with time slots
+- PDF invoice + quote generator (auto from order data)
+- Discount coupons (percentage or fixed, usage limit, expiry)
+- Wallet dashboard: balance, pending, history, withdrawal request
+- Advanced analytics dashboard (heatmap, funnel, revenue chart, benchmark)
+- Badge display (all earned badges)
+- Dispute response: reply to dispute + upload proof files
+- Webhook configuration
+- Onboarding checklist (until complete)
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+ADMIN INTERFACE
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Global dashboard: real-time charts — orders, revenue, users, services, disputes — filterable by wilaya + date + category
+Wilaya analytics: table + chart for all 58 wilayas (sellers, services, orders, revenue, disputes) — feature a wilaya on homepage
+Seller management: pending registrations → approve/reject with reason → email + WhatsApp notification
+Document verification: review OCR extracted text + uploaded image → approve → badge assigned
+Service moderation: pending services queue → approve/reject with reason
+Account actions: ban, suspend (with duration), reactivate — all logged with reason + IP
+Payment management: review CIB/BaridiMob/Dahabia receipts → confirm/reject
+Withdrawal management: review withdrawal requests → approve/process/reject
+Escrow oversight: full view of all held/released/disputed transactions — manual override capability
+Dispute management: full thread view → decide (full refund / partial / reject) → notify both parties
+AI flagged content queue: Perspective API flagged messages + sentiment-flagged reviews
+Fraud flags queue: all fraud_flags entries for review
+Report management: user reports on sellers/services → take action
+Commission configuration: set % per category, override per wilaya, set effective date
+Category management: add/edit/delete/reorder, set icon, FR+AR names
+Banner management: create/schedule/target banners per wilaya
+Blog CMS: create/edit/publish posts with cover image, wilaya tag, FR+AR versions
+Broadcast notifications: to all users / by role / by wilaya
+Beta invitation management: send codes, view acceptance rate, waitlist management
+Affiliate oversight: view all affiliates, commission totals, payout management
+Backup management: view backup_logs, trigger manual backup, restore instructions
+Export: CSV + PDF — filters: wilaya, date, category — for orders, revenue, users, disputes, commissions
+Full activity log: every action with user ID, IP, timestamp, model affected
+API key management: view all issued keys, revoke any key
+Platform settings: site name, logo, contact, social links, maintenance mode, default commission, beta mode toggle, escrow auto-release delay
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+SEO & PERFORMANCE
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Dynamic metadata: wilaya pages, category pages, service pages, seller profiles
+- Open Graph image generation per page (Next.js og:image)
+- sitemap.xml: all 58 wilaya URLs + category URLs + all approved service URLs — regenerated nightly
+- robots.txt: correctly configured
+- Next.js SSR for real-time pages, ISR for wilaya + category pages
+- PostgreSQL full-text search with tsvector + GIN index (fr + ar)
+- Cloudinary transformations + Next/Image for all images
+- Lazy loading for all service cards
+- Core Web Vitals targets: LCP < 2.5s, CLS < 0.1, FID < 100ms
+- Structured data (JSON-LD) on service pages for rich snippets
+- Canonical URLs on all pages
+- Hreflang tags for FR/AR/EN versions
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+ADDITIONAL FEATURES
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Dark/Light mode — localStorage — system-wide
+- PWA: installable Android/iOS, offline fallback, app manifest, service worker
+- i18n: French (default), Arabic (full RTL), English — language switcher in navbar
+- QR code per service (qrcode.react) — shareable via WhatsApp or link
+- Google Calendar sync: confirmed appointments auto-synced
+- Leaderboard: national + per-wilaya — updated daily
+- "Vendeur Vérifié" badge everywhere: service cards, profiles, search results, leaderboard
+- Email notifications: order confirmed, new message, review received, dispute opened, account approved/rejected, escrow released, withdrawal processed
+- University blog/news: CMS, filterable by wilaya, FR+AR
+- 2FA for sellers (mandatory), for clients (optional) — TOTP
+- GDPR-spirit compliance: cookie consent, data export on request, account deletion with full data wipe
+- Automated testing: PHPUnit (Laravel), Jest + Testing Library (Next.js)
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+DELIVERABLES
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Full Laravel 11 backend:
+- All migrations in correct dependency order (wilayas first)
+- Factories + Seeders: all 58 wilayas, 5 pilot wilayas flagged, demo users (admin + 3 sellers + 3 clients per pilot wilaya), demo services and orders
+- All API routes with Sanctum protection
+- All Policies (WilayaPolicy, ServicePolicy, OrderPolicy, EscrowPolicy, etc.)
+- All Jobs: SendEmailJob, SendWhatsAppJob, AutoCancelOrderJob, AutoReleaseEscrowJob, AIDescriptionJob, OCRProcessJob, SentimentAnalysisJob, ToxicityCheckJob, BackupDatabaseJob, UpdateLeaderboardJob, UpdateTrustScoreJob, GenerateSitemapJob
+- Laravel Horizon config for queue management
+- Laravel Reverb config for WebSockets
+- Health check endpoint: GET /api/health
+- Swagger/OpenAPI auto-generation setup
+
+2. Full Next.js 14+ frontend:
+- National homepage with all 12 sections
+- 58 wilaya pages (SSR + ISR)
+- All 3 dashboards: client, seller, admin — complete UI in FR/AR/EN
+- RTL layout engine for Arabic
+- WilayaSelector reusable component (used in all forms, search bars, filters)
+- All 8 AI integrations wired and functional
+- Complete auth flow: registration, email verification, login, Google OAuth, 2FA (TOTP), password reset
+- Real-time chat UI (Reverb WebSockets)
+- Escrow status UI in order timeline
+- Contract signing UI
+- Secure file download UI with token validation
+- Client rating UI (after order completion)
+- Seller wallet + withdrawal UI
+- Seller onboarding checklist UI
+- Advanced analytics dashboard with charts (recharts)
+- Affiliate dashboard UI
+- Beta landing page with countdown and waitlist
+- PWA setup with next-pwa (manifest, service worker, offline page)
+
+3. README.md:
+- Project overview and architecture diagram
+- Local setup guide (step by step)
+- All required .env variables (Laravel + Next.js) with descriptions
+- Deployment guide: Vercel (Next.js) + Railway (Laravel) + Upstash (Redis)
+- Queue worker setup instructions
+- Backup restore procedure
+- API documentation link
+
+Start by generating the complete project folder structure for both Laravel and Next.js. Then scaffold all Laravel migrations in dependency order starting with wilayas. Then build the Next.js national homepage. Make every single component, API endpoint, and UI screen production-ready, clean-coded, accessible, and ultra-professional. This is the number one Algerian university marketplace — zero compromise on quality.
