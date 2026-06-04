@@ -1,7 +1,6 @@
 FROM node:22-alpine
 WORKDIR /app
 COPY . .
-RUN ls pnpm-lock.yaml && echo "lockfile found" || echo "lockfile MISSING"
 RUN npm install -g pnpm@11
 RUN pnpm install --no-frozen-lockfile
 RUN cd artifacts/api-server && node ./build.mjs
