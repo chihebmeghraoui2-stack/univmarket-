@@ -60,7 +60,7 @@ export default function SellerProducts() {
   const saveMutation = useMutation({
     mutationFn: async () => {
       const payload = { title, description, price: Number(price), coverPhoto, photos: photos.filter(Boolean), categoryId, wilayaId, location: location ? JSON.stringify(location) : null };
-      const url = editingId ? `/api/products/${editingId}` : "/api/products";
+      const url = editingId ? `${import.meta.env.VITE_API_URL || ""}/api/products/${editingId}` : "/api/products";
       const method = editingId ? "PUT" : "POST";
       const res = await apiFetch(url, { method, body: JSON.stringify(payload) });
       if (!res.ok) throw new Error("Erreur sauvegarde");
@@ -228,4 +228,5 @@ export default function SellerProducts() {
     </div>
   );
 }
+
 

@@ -37,7 +37,7 @@ export default function AdminBlogPage() {
   const saveMutation = useMutation({
     mutationFn: async () => {
       const payload = { ...articleData, tags: articleData.tags.split(",").map(tag => tag.trim()).filter(Boolean) };
-      const url = editing ? `/api/blog/${editing.id}` : "/api/blog";
+      const url = editing ? `${import.meta.env.VITE_API_URL || ""}/api/blog/${editing.id}` : "/api/blog";
       const method = editing ? "PUT" : "POST";
       const res = await fetch(url, {
         method,
@@ -165,3 +165,4 @@ export default function AdminBlogPage() {
     </div>
   );
 }
+
