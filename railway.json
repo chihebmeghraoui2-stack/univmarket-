@@ -1,0 +1,1 @@
+{"build":{"builder":"NIXPACKS","buildCommand":"cd artifacts/api-server && npm install && npm run build"},"deploy":{"startCommand":"cd artifacts/api-server && npm start","restartPolicyType":"ON_FAILURE"}}
