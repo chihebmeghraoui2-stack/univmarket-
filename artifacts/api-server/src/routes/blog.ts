@@ -1,4 +1,4 @@
-import { Router } from "express";
+ï»¿import { Router } from "express";
 import { db } from "@workspace/db";
 import { blogPostsTable, usersTable } from "@workspace/db/schema";
 import { eq, desc, and } from "drizzle-orm";
@@ -6,7 +6,7 @@ import { requireAuth } from "../middleware/auth";
 
 const router = Router();
 
-// Liste articles publiés
+// Liste articles publiï¿½s
 router.get("/api/blog", async (req, res) => {
   try {
     const posts = await db.select().from(blogPostsTable)
@@ -18,7 +18,7 @@ router.get("/api/blog", async (req, res) => {
   }
 });
 
-// Détail article
+// Dï¿½tail article
 router.get("/api/blog/:slug", async (req, res) => {
   try {
     const [post] = await db.select().from(blogPostsTable)
@@ -28,7 +28,7 @@ router.get("/api/blog/:slug", async (req, res) => {
       ));
     if (!post) return res.status(404).json({ error: "Article introuvable" });
 
-    // Incrémenter vues
+    // Incrï¿½menter vues
     await db.update(blogPostsTable)
       .set({ views: (post.views || 0) + 1 })
       .where(eq(blogPostsTable.id, post.id));
@@ -39,7 +39,7 @@ router.get("/api/blog/:slug", async (req, res) => {
   }
 });
 
-// Créer article (admin)
+// Crï¿½er article (admin)
 router.post("/api/blog", requireAuth, async (req, res) => {
   try {
     const authorId = (req as any).user.id;
@@ -91,3 +91,4 @@ router.delete("/api/blog/:id", requireAuth, async (req, res) => {
 });
 
 export default router;
+

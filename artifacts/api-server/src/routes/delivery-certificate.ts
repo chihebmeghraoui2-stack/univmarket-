@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq } from "drizzle-orm";
 import { db, deliveryCertificatesTable } from "@workspace/db";
 import { requireAuth } from "../middleware/auth";
@@ -48,3 +48,4 @@ router.get("/api/certificates/:id/download", async (req, res): Promise<void> => 
 });
 
 export default router;
+

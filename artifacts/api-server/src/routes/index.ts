@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import healthRouter from "./health";
 import authRouter from "./auth";
 import wilayasRouter from "./wilayas";
@@ -102,3 +102,4 @@ router.use(warningsRouter);
 router.use(twoFactorRouter);
 router.use(trendingRequestsRouter);
 export default router;
+

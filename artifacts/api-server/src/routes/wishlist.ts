@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq, and } from "drizzle-orm";
 import { db, wishlistsTable, servicesTable, usersTable, categoriesTable, wilayasTable } from "@workspace/db";
 import { requireAuth } from "../middleware/auth";
@@ -50,3 +50,4 @@ router.delete("/wishlist/:serviceId", requireAuth, async (req, res): Promise<voi
 });
 
 export default router;
+

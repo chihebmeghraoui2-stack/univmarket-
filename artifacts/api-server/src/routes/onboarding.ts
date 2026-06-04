@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq } from "drizzle-orm";
 import { db, sellerOnboardingProgressTable } from "@workspace/db";
 import { requireSeller } from "../middleware/auth";
@@ -42,3 +42,4 @@ router.put("/api/onboarding/step", requireSeller, async (req, res): Promise<void
 });
 
 export default router;
+

@@ -1,4 +1,4 @@
-import app from "./app";
+﻿import app from "./app";
 import { startKeepAlive } from "./lib/keep-alive";
 import { logger } from "./lib/logger";
 
@@ -25,3 +25,4 @@ app.listen(port, (err) => {
 
   logger.info({ port }, "Server listening");
 });
+

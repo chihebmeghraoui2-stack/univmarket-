@@ -1,4 +1,4 @@
-import { Router } from "express";
+﻿import { Router } from "express";
 import { db } from "@workspace/db";
 import { usersTable, notificationsTable } from "@workspace/db";
 import { eq, and, sql } from "drizzle-orm";
@@ -74,3 +74,4 @@ router.post("/admin/broadcast", requireAdmin, async (req, res) => {
 });
 
 export default router;
+

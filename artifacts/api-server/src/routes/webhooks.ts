@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq, desc } from "drizzle-orm";
 import { db, webhookEndpointsTable } from "@workspace/db";
 import { requireSeller } from "../middleware/auth";
@@ -63,3 +63,4 @@ router.get("/api/webhooks/logs", requireSeller, async (req, res): Promise<void> 
 });
 
 export default router;
+

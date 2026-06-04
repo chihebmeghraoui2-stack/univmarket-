@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
 import { messagesTable, ordersTable, usersTable } from "@workspace/db";
 import { eq, and, or, desc, sql } from "drizzle-orm";
@@ -226,3 +226,4 @@ router.post("/api/ai/generate-description", async (req, res) => {
 });
 
 export default router;
+

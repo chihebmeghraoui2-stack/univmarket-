@@ -107,3 +107,4 @@ export function containsProfanity(text: string): { found: boolean; word?: string
 export function hasProfanity(text: string): boolean {
   return containsProfanity(text).found;
 }
+

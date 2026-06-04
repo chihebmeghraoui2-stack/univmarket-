@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { HealthCheckResponse } from "@workspace/api-zod";
 import { pool } from "@workspace/db";
 
@@ -27,3 +27,4 @@ router.get("/health", async (_req, res) => {
 });
 
 export default router;
+

@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq } from "drizzle-orm";
 import { db, wilayaChangeRequestsTable } from "@workspace/db";
 import { requireAuth, requireAdmin } from "../middleware/auth";
@@ -54,3 +54,4 @@ router.put("/api/wilaya-change-requests/:id", requireAdmin, async (req, res): Pr
 });
 
 export default router;
+

@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq, avg } from "drizzle-orm";
 import { db, clientRatingsTable } from "@workspace/db";
 import { requireSeller } from "../middleware/auth";
@@ -37,3 +37,4 @@ router.get("/api/clients/:id/rating", async (req, res): Promise<void> => {
 });
 
 export default router;
+

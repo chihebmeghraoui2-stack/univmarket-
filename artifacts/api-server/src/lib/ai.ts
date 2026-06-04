@@ -1,4 +1,4 @@
-export async function callAI(prompt: string, maxTokens: number = 400): Promise<string> {
+﻿export async function callAI(prompt: string, maxTokens: number = 400): Promise<string> {
   // 1. Essai GROQ
   const groqKey = process.env.GROQ_API_KEY;
   if (groqKey) {

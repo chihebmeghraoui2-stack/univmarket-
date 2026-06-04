@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq, or, desc } from "drizzle-orm";
 import { db, invoicesTable, ordersTable } from "@workspace/db";
 import { requireAuth, requireAdmin } from "../middleware/auth";
@@ -56,3 +56,4 @@ router.post("/api/invoices", requireAuth, async (req, res): Promise<void> => {
 });
 
 export default router;
+

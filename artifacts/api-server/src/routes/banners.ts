@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq, and, desc } from "drizzle-orm";
 import { db, bannersTable } from "@workspace/db";
 import { requireAdmin } from "../middleware/auth";
@@ -82,3 +82,4 @@ router.post("/api/banners/:id/click", async (req, res): Promise<void> => {
 });
 
 export default router;
+

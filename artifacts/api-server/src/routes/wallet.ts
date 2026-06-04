@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq, desc, count } from "drizzle-orm";
 import { db, sellerWalletsTable, walletTransactionsTable, withdrawalRequestsTable } from "@workspace/db";
 import { requireAuth, requireSeller } from "../middleware/auth";
@@ -62,3 +62,4 @@ router.post("/wallet/withdraw", requireSeller, async (req, res): Promise<void> =
 });
 
 export default router;
+

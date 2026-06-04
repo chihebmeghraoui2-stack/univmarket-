@@ -1,4 +1,4 @@
-import { Router } from "express";
+ï»¿import { Router } from "express";
 import { callAI } from "../lib/ai";
 const router = Router();
 
@@ -9,7 +9,7 @@ router.post("/ai/generate-description", async (req, res) => {
       return res.status(400).json({ error: "Mots-cles requis" });
 
     const prompt = lang === "ar"
-      ? `ÇßÊÈ æÕİÇğ ãåäíÇğ æÇÖÍÇğ áÎÏãÉ ÌÇãÚíÉ ÌÒÇÆÑíÉ ÈäÇÁğ Úáì ÇáßáãÇÊ ÇáÊÇáíÉ: ${keywords.join(", ")}. ÇÌÚá ÇáæÕİ ãŞäÚÇğ İí 3 Ìãá İŞØ¡ Ïæä ãŞÏãÉ.`
+      ? `ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: ${keywords.join(", ")}. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ 3 ï¿½ï¿½ï¿½ ï¿½ï¿½Ø¡ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.`
       : `Redige une description professionnelle et convaincante pour un service universitaire algerien base sur ces mots-cles: ${keywords.join(", ")}. Ecris directement la description en 3 phrases claires, sans introduction ni titre, sans emojis.`;
 
     const description = await callAI(prompt, 200);

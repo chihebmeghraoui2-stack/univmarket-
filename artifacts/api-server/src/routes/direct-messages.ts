@@ -1,4 +1,4 @@
-import { Router } from "express";
+﻿import { Router } from "express";
 import { requireAuth } from "../middleware/auth";
 import pg from "pg";
 const { Pool } = pg;
@@ -122,3 +122,4 @@ router.post("/direct-messages/:userId", requireAuth, async (req, res) => {
 });
 
 export default router;
+

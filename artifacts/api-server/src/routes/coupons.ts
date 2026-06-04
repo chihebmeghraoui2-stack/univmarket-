@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq } from "drizzle-orm";
 import { db, couponsTable } from "@workspace/db";
 import { requireAuth, requireSeller } from "../middleware/auth";
@@ -51,3 +51,4 @@ router.post("/coupons/validate", requireAuth, async (req, res): Promise<void> =>
 });
 
 export default router;
+

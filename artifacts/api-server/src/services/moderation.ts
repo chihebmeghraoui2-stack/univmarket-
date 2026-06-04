@@ -1,4 +1,4 @@
-export async function checkToxicity(text: string): Promise<number> {
+﻿export async function checkToxicity(text: string): Promise<number> {
   try {
     const apiKey = process.env.PERSPECTIVE_API_KEY;
     if (!apiKey) return 0;
@@ -28,3 +28,4 @@ export async function isToxic(text: string, threshold = 0.85): Promise<boolean> 
   const score = await checkToxicity(text);
   return score > threshold;
 }
+

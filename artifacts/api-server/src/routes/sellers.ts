@@ -1,4 +1,4 @@
-import { Router } from "express";
+﻿import { Router } from "express";
 import { db } from "@workspace/db";
 import { sellerProfilesTable, usersTable, servicesTable } from "@workspace/db";
 import { eq, or, ilike, and } from "drizzle-orm";
@@ -80,3 +80,4 @@ router.put("/sellers/profile", requireAuth, async (req, res) => {
 });
 
 export default router;
+

@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq } from "drizzle-orm";
 import { db, sellerTrustScoresTable } from "@workspace/db";
 import { requireAdmin } from "../middleware/auth";
@@ -46,3 +46,4 @@ router.post("/api/trust-scores/recalculate", requireAdmin, async (req, res): Pro
 });
 
 export default router;
+

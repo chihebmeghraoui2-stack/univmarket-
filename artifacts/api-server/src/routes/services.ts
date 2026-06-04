@@ -1,4 +1,4 @@
-
+﻿
 // Migration: ajouter colonnes localisation si elles n'existent pas
 import pg from "pg";
 const { Pool: LocationPool } = pg;
@@ -468,3 +468,4 @@ router.patch("/admin/services/:id/location", async (req, res): Promise<void> => 
 });
 
 export default router;
+

@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq } from "drizzle-orm";
 import { db, usersTable, servicesTable, reviewsTable, wilayasTable } from "@workspace/db";
 import { count, avg } from "drizzle-orm";
@@ -33,3 +33,4 @@ router.get("/users/:id", async (req, res): Promise<void> => {
 });
 
 export default router;
+

@@ -1,4 +1,4 @@
-import { Router } from "express";
+ï»¿import { Router } from "express";
 import { db } from "@workspace/db";
 import { twoFactorTable, usersTable } from "@workspace/db/schema";
 import { eq } from "drizzle-orm";
@@ -38,7 +38,7 @@ router.post("/api/2fa/verify", requireAuth, async (req, res) => {
     const { token } = req.body;
 
     const [tf] = await db.select().from(twoFactorTable).where(eq(twoFactorTable.userId, userId));
-    if (!tf) return res.status(404).json({ error: "2FA non configuré" });
+    if (!tf) return res.status(404).json({ error: "2FA non configurï¿½" });
 
     const isValid = speakeasy.totp.verify({
       secret: tf.secret,
@@ -68,7 +68,7 @@ router.post("/api/2fa/disable", requireAuth, async (req, res) => {
     const { token } = req.body;
 
     const [tf] = await db.select().from(twoFactorTable).where(eq(twoFactorTable.userId, userId));
-    if (!tf) return res.status(404).json({ error: "2FA non configuré" });
+    if (!tf) return res.status(404).json({ error: "2FA non configurï¿½" });
 
     const isValid = speakeasy.totp.verify({
       secret: tf.secret,
@@ -99,3 +99,4 @@ router.get("/api/2fa/status", requireAuth, async (req, res) => {
 });
 
 export default router;
+

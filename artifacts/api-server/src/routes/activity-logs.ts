@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq, and, desc } from "drizzle-orm";
 import { db, activityLogsTable } from "@workspace/db";
 import { requireAdmin } from "../middleware/auth";
@@ -23,3 +23,4 @@ router.get("/api/activity-logs", requireAdmin, async (req, res): Promise<void> =
 });
 
 export default router;
+

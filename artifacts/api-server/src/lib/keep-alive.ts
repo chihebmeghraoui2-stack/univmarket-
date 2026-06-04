@@ -15,3 +15,4 @@ export function startKeepAlive() {
   }, INTERVAL_MS);
   console.log("[keep-alive] started — ping toutes les 4 minutes");
 }
+

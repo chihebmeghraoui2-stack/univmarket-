@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from "express";
+﻿import type { Request, Response, NextFunction } from "express";
 import { eq } from "drizzle-orm";
 import { db, usersTable, sessionsTable } from "@workspace/db";
 
@@ -48,3 +48,4 @@ export async function requireSeller(req: Request, res: Response, next: NextFunct
     next();
   });
 }
+

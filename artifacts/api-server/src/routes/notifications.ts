@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq, and, desc, count } from "drizzle-orm";
 import { db, notificationsTable } from "@workspace/db";
 import { requireAuth } from "../middleware/auth";
@@ -58,3 +58,4 @@ router.delete("/notifications", requireAuth, async (req, res): Promise<void> => 
 });
 
 export default router;
+

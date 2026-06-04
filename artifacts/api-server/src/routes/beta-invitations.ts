@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq, desc } from "drizzle-orm";
 import { db, betaInvitationsTable } from "@workspace/db";
 import { requireAdmin } from "../middleware/auth";
@@ -53,3 +53,4 @@ router.post("/api/beta-invitations/validate", async (req, res): Promise<void> =>
 });
 
 export default router;
+

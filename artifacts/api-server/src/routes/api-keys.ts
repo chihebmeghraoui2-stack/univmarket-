@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { createHash } from "crypto";
 import { eq, desc } from "drizzle-orm";
 import { db, apiKeysTable } from "@workspace/db";
@@ -73,3 +73,4 @@ router.put("/api/api-keys/:id/revoke", requireAuth, async (req, res): Promise<vo
 });
 
 export default router;
+

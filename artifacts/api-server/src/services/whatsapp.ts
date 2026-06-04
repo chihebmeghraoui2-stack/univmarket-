@@ -1,4 +1,4 @@
-import { logger } from "../lib/logger";
+﻿import { logger } from "../lib/logger";
 import { db, whatsappLogsTable } from "@workspace/db";
 
 // Twilio WhatsApp Business API wrapper
@@ -228,3 +228,4 @@ export async function sendWithdrawalProcessed(
     });
   }
 }
+

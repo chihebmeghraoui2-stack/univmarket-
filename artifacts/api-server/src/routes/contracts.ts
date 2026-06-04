@@ -1,4 +1,4 @@
-import { Router } from "express";
+ï»¿import { Router } from "express";
 import { db } from "@workspace/db";
 import { contractsTable } from "@workspace/db/schema";
 import { eq } from "drizzle-orm";
@@ -38,7 +38,7 @@ router.post("/api/contracts/:id/sign", requireAuth, async (req, res) => {
 
     const isClient = contract.clientId === userId;
     const isSeller = contract.sellerId === userId;
-    if (!isClient && !isSeller) return res.status(403).json({ error: "Non autorisé" });
+    if (!isClient && !isSeller) return res.status(403).json({ error: "Non autorisï¿½" });
 
     const update: any = isClient
       ? { clientSignedAt: new Date() }
@@ -59,3 +59,4 @@ router.post("/api/contracts/:id/sign", requireAuth, async (req, res) => {
 });
 
 export default router;
+

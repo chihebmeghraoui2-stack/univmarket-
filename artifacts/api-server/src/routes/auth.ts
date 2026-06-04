@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq, and, gt } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
@@ -249,3 +249,4 @@ router.put("/auth/profile", requireAuth, async (req, res): Promise<void> => {
 });
 
 export default router;
+

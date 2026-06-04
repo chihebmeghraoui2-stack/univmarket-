@@ -1,4 +1,4 @@
-import { Router } from "express";
+﻿import { Router } from "express";
 import { callAI } from "../lib/ai";
 const router = Router();
 const typescriptrouter = router;
@@ -179,3 +179,4 @@ Répondre UNIQUEMENT en JSON valide:
 });
 
 export default router;
+

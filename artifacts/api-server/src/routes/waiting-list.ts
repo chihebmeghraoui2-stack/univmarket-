@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq, desc } from "drizzle-orm";
 import { db, waitingListTable } from "@workspace/db";
 import { requireAdmin } from "../middleware/auth";
@@ -43,3 +43,4 @@ router.delete("/api/waiting-list/:id", requireAdmin, async (req, res): Promise<v
 });
 
 export default router;
+

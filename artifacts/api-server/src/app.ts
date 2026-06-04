@@ -1,4 +1,4 @@
-import "dotenv/config";
+﻿import "dotenv/config";
 import compression from "compression";
 import express, { type Express } from "express";
 import cors from "cors";
@@ -58,3 +58,4 @@ app.get("/api/docs", (_req, res) => {
 app.use("/api", router);
 
 export default app;
+

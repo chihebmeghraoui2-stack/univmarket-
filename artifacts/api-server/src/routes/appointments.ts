@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+﻿import { Router, type IRouter } from "express";
 import { eq, or, desc } from "drizzle-orm";
 import { db, appointmentsTable, availabilitySlotsTable } from "@workspace/db";
 import { requireAuth, requireSeller } from "../middleware/auth";
@@ -92,3 +92,4 @@ router.put("/api/sellers/availability", requireSeller, async (req, res): Promise
 });
 
 export default router;
+
