@@ -1,4 +1,4 @@
-﻿import { Router } from "express";
+﻿﻿import { Router } from "express";
 import { db } from "@workspace/db";
 import { affiliationsTable, affiliationEarningsTable, usersTable } from "@workspace/db/schema";
 import { eq, and } from "drizzle-orm";
