@@ -1,6 +1,9 @@
 FROM node:22-alpine
 RUN npm install -g pnpm@11
 WORKDIR /app
+COPY pnpm-lock.yaml ./
+COPY pnpm-workspace.yaml ./
+COPY package.json ./
 COPY . .
 RUN pnpm install --frozen-lockfile
 RUN cd artifacts/api-server && node ./build.mjs
