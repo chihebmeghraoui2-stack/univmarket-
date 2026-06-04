@@ -1,4 +1,4 @@
-﻿﻿import { Router } from "express";
+import { Router } from "express";
 import { db } from "@workspace/db";
 import { affiliationsTable, affiliationEarningsTable, usersTable } from "@workspace/db/schema";
 import { eq, and } from "drizzle-orm";
@@ -6,7 +6,7 @@ import { requireAuth } from "../middleware/auth";
 
 const router = Router();
 
-// Mon r�seau d affiliation
+// Mon reseau d affiliation
 router.get("/api/affiliations/my-network", requireAuth, async (req, res) => {
   try {
     const userId = (req as any).user.id;
