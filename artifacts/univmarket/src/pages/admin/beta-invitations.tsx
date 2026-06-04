@@ -13,7 +13,7 @@ export default function AdminBetaInvitations() {
   if (!isAdmin) { setLocation("/"); return null; }
 
   const { data: invitations, isLoading } = useQuery(["admin-beta-invitations"], async () => {
-    const res = await fetch("/api/beta-invitations", {
+    const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/beta-invitations", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     if (!res.ok) throw new Error("Impossible de charger les invitations");
@@ -60,3 +60,4 @@ export default function AdminBetaInvitations() {
     </div>
   );
 }
+

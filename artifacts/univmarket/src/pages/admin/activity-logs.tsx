@@ -13,7 +13,7 @@ export default function AdminActivityLogs() {
   if (!isAdmin) { setLocation("/"); return null; }
 
   const { data: logs, isLoading } = useQuery(["admin-activity-logs"], async () => {
-    const res = await fetch("/api/activity-logs", {
+    const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/activity-logs", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     if (!res.ok) throw new Error(t("load_error"));

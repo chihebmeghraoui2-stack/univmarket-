@@ -30,14 +30,14 @@ export default function SellerCouponsPage() {
   const [expiresAt, setExpiresAt] = useState("");
 
   const { data, isLoading, refetch } = useQuery(["seller-coupons"], async () => {
-    const res = await fetch("/api/coupons", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+    const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/coupons", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
     if (!res.ok) throw new Error(t("load_error"));
     return res.json();
   });
 
   const createMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch("/api/coupons", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/coupons", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
         body: JSON.stringify({ code, type, value, usage_limit: limit, expires_at: expiresAt }),

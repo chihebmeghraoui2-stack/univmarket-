@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+﻿import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/utils";
 
 interface WilayaSelectorProps {
@@ -13,7 +13,7 @@ export default function WilayaSelector({ value, onChange, placeholder = "Choisir
   const { data: wilayas = [] } = useQuery<any[]>({
     queryKey: ["/api/wilayas"],
     queryFn: async () => {
-      const res = await apiFetch("/api/wilayas");
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/wilayas");
       if (!res.ok) throw new Error("Erreur chargement wilayas");
       const data = await res.json();
       if (Array.isArray(data)) return data;
@@ -43,3 +43,4 @@ export default function WilayaSelector({ value, onChange, placeholder = "Choisir
     </select>
   );
 }
+

@@ -13,7 +13,7 @@ export default function BlogPage() {
   const { data: posts, isLoading } = useQuery({
     queryKey: ["/api/blog"],
     queryFn: async () => {
-      const res = await fetch("/api/blog");
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/blog");
       return res.json();
     },
   });

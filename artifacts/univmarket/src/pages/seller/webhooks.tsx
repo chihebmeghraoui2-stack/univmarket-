@@ -13,7 +13,7 @@ export default function SellerWebhooks() {
   if (!isSeller) { setLocation("/"); return null; }
 
   const { data: webhooks, isLoading } = useQuery(["seller-webhooks"], async () => {
-    const res = await fetch("/api/webhooks", {
+    const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/webhooks", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     if (!res.ok) throw new Error(t("load_error"));

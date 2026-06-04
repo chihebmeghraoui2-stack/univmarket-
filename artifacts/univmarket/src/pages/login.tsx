@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,7 +26,7 @@ export default function Login() {
 
   const adminLoginMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch("/api/auth/admin-key-login", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/auth/admin-key-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ secretKey: adminKey }),
@@ -139,7 +139,7 @@ export default function Login() {
                             </Link>
                           </div>
                           <FormControl>
-                            <Input type="password" placeholder="••••••••" className="h-11 rounded-xl border-gray-200 dark:bg-slate-700 dark:border-slate-600 dark:text-white" {...field} />
+                            <Input type="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" className="h-11 rounded-xl border-gray-200 dark:bg-slate-700 dark:border-slate-600 dark:text-white" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -207,3 +207,4 @@ export default function Login() {
     </>
   );
 }
+

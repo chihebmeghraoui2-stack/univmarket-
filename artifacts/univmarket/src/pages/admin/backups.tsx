@@ -20,7 +20,7 @@ export default function AdminBackups() {
 
   const triggerMutation = useMutation({
     mutationFn: async () => {
-      await fetch("/api/backups/trigger", {
+      await fetch((import.meta.env.VITE_API_URL || "") + "/api/backups/trigger", {
         method: "POST",
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });

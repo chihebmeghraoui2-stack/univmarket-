@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+﻿import { useState, useRef, useEffect, useCallback } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,12 +28,12 @@ interface Props {
 }
 
 const QUICK = [
-  { icon: "📊", label: "Résumé plateforme", q: "Donne-moi un résumé complet et analytique de la plateforme aujourd'hui avec toutes les métriques importantes." },
-  { icon: "⚠️", label: "Activités suspectes", q: "Y a-t-il des activités suspectes ou anormales récentes ? Analyse les risques de fraude." },
-  { icon: "🏆", label: "Top wilayas", q: "Quelles sont les wilayas les plus actives ? Analyse les performances géographiques." },
-  { icon: "💸", label: "Retraits en attente", q: "Analyse les retraits en attente et donne-moi des recommandations de traitement." },
-  { icon: "⚡", label: "Litiges ouverts", q: "Analyse les litiges ouverts et recommande des actions de résolution prioritaires." },
-  { icon: "🎯", label: "Améliorations", q: "Recommande les 5 actions les plus importantes pour améliorer la plateforme maintenant." },
+  { icon: "ًں“ٹ", label: "Rأ©sumأ© plateforme", q: "Donne-moi un rأ©sumأ© complet et analytique de la plateforme aujourd'hui avec toutes les mأ©triques importantes." },
+  { icon: "âڑ ï¸ڈ", label: "Activitأ©s suspectes", q: "Y a-t-il des activitأ©s suspectes ou anormales rأ©centes ? Analyse les risques de fraude." },
+  { icon: "ًںڈ†", label: "Top wilayas", q: "Quelles sont les wilayas les plus actives ? Analyse les performances gأ©ographiques." },
+  { icon: "ًں’¸", label: "Retraits en attente", q: "Analyse les retraits en attente et donne-moi des recommandations de traitement." },
+  { icon: "âڑ،", label: "Litiges ouverts", q: "Analyse les litiges ouverts et recommande des actions de rأ©solution prioritaires." },
+  { icon: "ًںژ¯", label: "Amأ©liorations", q: "Recommande les 5 actions les plus importantes pour amأ©liorer la plateforme maintenant." },
 ];
 
 function renderMd(text: string) {
@@ -50,7 +50,7 @@ export default function AdminAIAssistant({ userId, userName, userRole }: Props) 
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "🤖 Bonjour ! Je suis **ARIA** — votre assistante IA exclusive UnivMarket.\n\nJ'ai accès en **temps réel** à toutes les données de la plateforme : utilisateurs, commandes, services, litiges, retraits, wilayas et plus encore.\n\nChaque réponse est basée sur les données actuelles de votre base de données. Comment puis-je vous aider ?",
+      content: "ًں¤– Bonjour ! Je suis **ARIA** â€” votre assistante IA exclusive UnivMarket.\n\nJ'ai accأ¨s en **temps rأ©el** أ  toutes les donnأ©es de la plateforme : utilisateurs, commandes, services, litiges, retraits, wilayas et plus encore.\n\nChaque rأ©ponse est basأ©e sur les donnأ©es actuelles de votre base de donnأ©es. Comment puis-je vous aider ?",
       timestamp: new Date().toISOString(),
     }
   ]);
@@ -63,11 +63,11 @@ export default function AdminAIAssistant({ userId, userName, userRole }: Props) 
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Snapshot en temps réel — refresh toutes les 30 secondes si liveMode
+  // Snapshot en temps rأ©el â€” refresh toutes les 30 secondes si liveMode
   const { data: snapshot, refetch: refetchSnapshot } = useQuery<Snapshot>({
     queryKey: ["aria-snapshot"],
     queryFn: async () => {
-      const res = await apiFetch("/api/admin/ai-snapshot");
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/admin/ai-snapshot");
       if (!res.ok) throw new Error("snapshot failed");
       return res.json();
     },
@@ -79,7 +79,7 @@ export default function AdminAIAssistant({ userId, userName, userRole }: Props) 
     mutationFn: async (message: string) => {
       // Passer l'historique de conversation (6 derniers messages)
       const historyToSend = messages.slice(-6).map(m => ({ role: m.role, content: m.content }));
-      const res = await apiFetch("/api/admin/ai-assistant", {
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/admin/ai-assistant", {
         method: "POST",
         body: JSON.stringify({
           message,
@@ -97,13 +97,13 @@ export default function AdminAIAssistant({ userId, userName, userRole }: Props) 
         content: data.reply,
         timestamp: data.timestamp,
       }]);
-      // Refresh snapshot après chaque réponse
+      // Refresh snapshot aprأ¨s chaque rأ©ponse
       refetchSnapshot();
     },
     onError: () => {
       setMessages(prev => [...prev, {
         role: "assistant",
-        content: "❌ Erreur de connexion à l'IA. Vérifiez votre connexion et la clé GROQ_API_KEY.",
+        content: "â‌Œ Erreur de connexion أ  l'IA. Vأ©rifiez votre connexion et la clأ© GROQ_API_KEY.",
         timestamp: new Date().toISOString(),
       }]);
     },
@@ -120,7 +120,7 @@ export default function AdminAIAssistant({ userId, userName, userRole }: Props) 
   const clearChat = () => {
     setMessages([{
       role: "assistant",
-      content: "🔄 Conversation réinitialisée. Je suis prêt avec les données fraîches de la plateforme !",
+      content: "ًں”„ Conversation rأ©initialisأ©e. Je suis prأھt avec les donnأ©es fraأ®ches de la plateforme !",
       timestamp: new Date().toISOString(),
     }]);
   };
@@ -154,11 +154,11 @@ export default function AdminAIAssistant({ userId, userName, userRole }: Props) 
             <div className="flex items-center gap-2 text-white">
               <Brain className="h-5 w-5" />
               <div>
-                <span className="font-bold text-sm">ARIA — Admin IA</span>
+                <span className="font-bold text-sm">ARIA â€” Admin IA</span>
                 <div className="flex items-center gap-1 mt-0.5">
                   <span className="h-1.5 w-1.5 bg-green-400 rounded-full animate-pulse"></span>
                   <span className="text-xs text-white/70">
-                    {liveMode ? "Live · " : ""}{snapshot ? `${snapshot.users.total} users · ${snapshot.orders.total} orders` : "Chargement..."}
+                    {liveMode ? "Live آ· " : ""}{snapshot ? `${snapshot.users.total} users آ· ${snapshot.orders.total} orders` : "Chargement..."}
                   </span>
                 </div>
               </div>
@@ -167,11 +167,11 @@ export default function AdminAIAssistant({ userId, userName, userRole }: Props) 
               <button
                 onClick={() => setLiveMode(!liveMode)}
                 className={`p-1 rounded text-xs flex items-center gap-1 ${liveMode ? "text-green-300" : "text-white/50"}`}
-                title={liveMode ? "Live activé" : "Live désactivé"}
+                title={liveMode ? "Live activأ©" : "Live dأ©sactivأ©"}
               >
                 <Zap className="h-3 w-3" />
               </button>
-              <button onClick={() => refetchSnapshot()} className="text-white/70 hover:text-white p-1" title="Rafraîchir données">
+              <button onClick={() => refetchSnapshot()} className="text-white/70 hover:text-white p-1" title="Rafraأ®chir donnأ©es">
                 <RefreshCw className="h-3 w-3" />
               </button>
               <Select value={language} onValueChange={setLanguage}>
@@ -179,9 +179,9 @@ export default function AdminAIAssistant({ userId, userName, userRole }: Props) 
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="fr">🇫🇷 FR</SelectItem>
-                  <SelectItem value="ar">🇩🇿 AR</SelectItem>
-                  <SelectItem value="en">🇬🇧 EN</SelectItem>
+                  <SelectItem value="fr">ًں‡«ًں‡· FR</SelectItem>
+                  <SelectItem value="ar">ًں‡©ًں‡؟ AR</SelectItem>
+                  <SelectItem value="en">ًں‡¬ًں‡§ EN</SelectItem>
                 </SelectContent>
               </Select>
               <button onClick={() => setMinimized(!minimized)} className="text-white hover:text-white/70 p-1">
@@ -200,14 +200,14 @@ export default function AdminAIAssistant({ userId, userName, userRole }: Props) 
                 <div className="bg-amber-50 border-b border-amber-200 px-3 py-1.5 flex items-center gap-2 flex-shrink-0">
                   <AlertTriangle className="h-3 w-3 text-amber-600 flex-shrink-0" />
                   <span className="text-xs text-amber-700">
-                    {snapshot.disputes.open > 0 && <span className="mr-2">⚠️ {snapshot.disputes.open} litiges ouverts</span>}
-                    {snapshot.withdrawals.pending > 0 && <span className="mr-2">💸 {snapshot.withdrawals.pending} retraits en attente</span>}
-                    {snapshot.services.pending > 0 && <span>📦 {snapshot.services.pending} services à valider</span>}
+                    {snapshot.disputes.open > 0 && <span className="mr-2">âڑ ï¸ڈ {snapshot.disputes.open} litiges ouverts</span>}
+                    {snapshot.withdrawals.pending > 0 && <span className="mr-2">ًں’¸ {snapshot.withdrawals.pending} retraits en attente</span>}
+                    {snapshot.services.pending > 0 && <span>ًں“¦ {snapshot.services.pending} services أ  valider</span>}
                   </span>
                 </div>
               )}
 
-              {/* Contexte utilisateur analysé */}
+              {/* Contexte utilisateur analysأ© */}
               {userId && (
                 <div className="bg-purple-50 px-3 py-2 border-b flex items-center gap-2 flex-shrink-0">
                   <AlertTriangle className="h-3 w-3 text-purple-600" />
@@ -271,7 +271,7 @@ export default function AdminAIAssistant({ userId, userName, userRole }: Props) 
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && send()}
-                    placeholder="Posez votre question à ARIA..."
+                    placeholder="Posez votre question أ  ARIA..."
                     className="flex-1 text-sm h-9"
                     disabled={mutation.isPending}
                   />
@@ -281,7 +281,7 @@ export default function AdminAIAssistant({ userId, userName, userRole }: Props) 
                   </Button>
                 </div>
                 <p className="text-center text-xs text-gray-300 mt-1">
-                  Données live · {snapshot ? new Date(snapshot.snapshot_at).toLocaleTimeString("fr-DZ") : "..."}
+                  Donnأ©es live آ· {snapshot ? new Date(snapshot.snapshot_at).toLocaleTimeString("fr-DZ") : "..."}
                 </p>
               </div>
             </>
@@ -291,3 +291,4 @@ export default function AdminAIAssistant({ userId, userName, userRole }: Props) 
     </>
   );
 }
+

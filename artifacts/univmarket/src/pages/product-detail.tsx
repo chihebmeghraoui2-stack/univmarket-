@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/utils";
@@ -37,7 +37,7 @@ export default function ProductDetail() {
   const { data: chats = [] } = useQuery<any[]>({
     queryKey: ["productChats"],
     queryFn: async () => {
-      const res = await apiFetch("/api/product-chats");
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/product-chats");
       if (!res.ok) return [];
       return res.json();
     },
@@ -48,7 +48,7 @@ export default function ProductDetail() {
   const contactMutation = useMutation({
     mutationFn: async () => {
       const res = await apiFetch(`/api/products/${productId}/contact`, { method: "POST" });
-      if (!res.ok) throw new Error("Impossible de démarrer le chat");
+      if (!res.ok) throw new Error("Impossible de dأ©marrer le chat");
       return res.json();
     },
     onSuccess: (data) => {
@@ -82,7 +82,7 @@ export default function ProductDetail() {
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm">Localisation de l'événement</p>
+                  <p className="font-medium text-sm">Localisation de l'أ©vأ©nement</p>
                   <p className="text-sm text-muted-foreground truncate">{loc.address}</p>
                 </div>
                 <a
@@ -104,7 +104,7 @@ export default function ProductDetail() {
           <Button onClick={() => setLocation(`/product-chat/${existingChat.id}`)}>{t("continue_discussion")}</Button>
         ) : isAuthenticated ? (
           <Button onClick={() => contactMutation.mutate()} disabled={contactMutation.isLoading || !product}>
-            {contactMutation.isLoading ? "Création du chat..." : "📞 Contacter le vendeur"}
+            {contactMutation.isLoading ? "Crأ©ation du chat..." : "ًں“‍ Contacter le vendeur"}
           </Button>
         ) : (
           <Button onClick={() => setLocation("/login")}>{t("login_to_contact")}</Button>
@@ -176,7 +176,7 @@ export default function ProductDetail() {
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge>{product.wilaya?.nameFr}</Badge>
-                    {product.seller?.verifiedAt ? <Badge variant="outline">Vérifié</Badge> : null}
+                    {product.seller?.verifiedAt ? <Badge variant="outline">Vأ©rifiأ©</Badge> : null}
                   </div>
                   <TrustScoreBadge score={Number(product.seller?.trustScore ?? 0)} showLabel={false} />
                 </div>
@@ -197,3 +197,4 @@ export default function ProductDetail() {
     </div>
   );
 }
+

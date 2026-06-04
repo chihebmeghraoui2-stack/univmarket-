@@ -22,7 +22,7 @@ export default function AdminBeta() {
   const { data: waitlist = [] } = useQuery<any[]>({
     queryKey: ["/api/waiting-list"],
     queryFn: async () => {
-      const r = await fetch("/api/waiting-list", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+      const r = await fetch((import.meta.env.VITE_API_URL || "") + "/api/waiting-list", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
       return r.ok ? r.json() : [];
     },
   });
@@ -30,14 +30,14 @@ export default function AdminBeta() {
   const { data: invitations = [], refetch } = useQuery<any[]>({
     queryKey: ["/api/beta-invitations"],
     queryFn: async () => {
-      const r = await fetch("/api/beta-invitations", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+      const r = await fetch((import.meta.env.VITE_API_URL || "") + "/api/beta-invitations", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
       return r.ok ? r.json() : [];
     },
   });
 
   const sendMutation = useMutation({
     mutationFn: async () => {
-      const r = await fetch("/api/beta-invitations", {
+      const r = await fetch((import.meta.env.VITE_API_URL || "") + "/api/beta-invitations", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
         body: JSON.stringify({ email, role }),

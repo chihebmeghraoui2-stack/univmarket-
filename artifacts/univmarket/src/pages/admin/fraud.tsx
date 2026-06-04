@@ -14,7 +14,7 @@ export default function AdminFraud() {
   if (!isAdmin) { setLocation("/"); return null; }
 
   const { data: fraudFlags, isLoading } = useQuery(["admin-fraud"], async () => {
-    const res = await fetch("/api/fraud", {
+    const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/fraud", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     if (!res.ok) throw new Error(t("load_error"));

@@ -14,7 +14,7 @@ export default function SellerClientRatings() {
   if (!isSeller) { setLocation("/"); return null; }
 
   const { data: ratings, isLoading } = useQuery(["seller-client-ratings"], async () => {
-    const res = await fetch("/api/client-ratings", {
+    const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/client-ratings", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     if (!res.ok) throw new Error(t("load_error"));

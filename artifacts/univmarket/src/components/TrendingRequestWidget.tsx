@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -43,7 +43,7 @@ export default function TrendingRequestWidget({ sellerServices }: Props) {
   const { data: existingRequest, isLoading } = useQuery<TrendingRequest | null>({
     queryKey: ["trending-request-my"],
     queryFn: async () => {
-      const res = await apiFetch("/api/trending-requests/my");
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/trending-requests/my");
       if (!res.ok) return null;
       return res.json();
     },
@@ -51,7 +51,7 @@ export default function TrendingRequestWidget({ sellerServices }: Props) {
 
   const submitMutation = useMutation({
     mutationFn: async () => {
-      const res = await apiFetch("/api/trending-requests", {
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/trending-requests", {
         method: "POST",
         body: JSON.stringify({ service_id: selectedServiceId, message }),
       });
@@ -62,7 +62,7 @@ export default function TrendingRequestWidget({ sellerServices }: Props) {
       return res.json();
     },
     onSuccess: () => {
-      toast({ title: "✅ Demande envoyée à l'admin !" });
+      toast({ title: "âœ… Demande envoyأ©e أ  l'admin !" });
       setOpen(false);
       setMessage("");
       setSelectedServiceId(null);
@@ -78,7 +78,7 @@ export default function TrendingRequestWidget({ sellerServices }: Props) {
       return res.json();
     },
     onSuccess: () => {
-      toast({ title: "Demande annulée" });
+      toast({ title: "Demande annulأ©e" });
       queryClient.invalidateQueries({ queryKey: ["trending-request-my"] });
     },
     onError: () => toast({ title: "Erreur", variant: "destructive" }),
@@ -88,8 +88,8 @@ export default function TrendingRequestWidget({ sellerServices }: Props) {
 
   const statusConfig = {
     pending: { label: "En attente", color: "bg-amber-100 text-amber-700", icon: Clock },
-    approved: { label: "Acceptée ✨", color: "bg-green-100 text-green-700", icon: CheckCircle },
-    rejected: { label: "Refusée", color: "bg-red-100 text-red-700", icon: XCircle },
+    approved: { label: "Acceptأ©e âœ¨", color: "bg-green-100 text-green-700", icon: CheckCircle },
+    rejected: { label: "Refusأ©e", color: "bg-red-100 text-red-700", icon: XCircle },
   };
 
   return (
@@ -152,10 +152,10 @@ export default function TrendingRequestWidget({ sellerServices }: Props) {
         ) : (
           <div className="space-y-3">
             <p className="text-xs text-gray-600">
-              Choisissez un de vos services approuvés pour le proposer comme <span className="font-semibold text-purple-700">produit tendance</span> sur la page d'accueil.
+              Choisissez un de vos services approuvأ©s pour le proposer comme <span className="font-semibold text-purple-700">produit tendance</span> sur la page d'accueil.
             </p>
             {approvedServices.length === 0 ? (
-              <p className="text-xs text-muted-foreground italic text-center py-2">Aucun service approuvé disponible</p>
+              <p className="text-xs text-muted-foreground italic text-center py-2">Aucun service approuvأ© disponible</p>
             ) : (
               <Button className="w-full rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 text-white border-none h-9"
                 onClick={() => setOpen(true)}>
@@ -207,7 +207,7 @@ export default function TrendingRequestWidget({ sellerServices }: Props) {
               <Textarea
                 value={message}
                 onChange={e => setMessage(e.target.value)}
-                placeholder="Expliquez pourquoi ce service mérite d'être mis en tendance..."
+                placeholder="Expliquez pourquoi ce service mأ©rite d'أھtre mis en tendance..."
                 rows={3}
                 className="rounded-xl resize-none text-sm"
                 maxLength={300}
@@ -231,3 +231,4 @@ export default function TrendingRequestWidget({ sellerServices }: Props) {
     </>
   );
 }
+

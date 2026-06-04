@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type ChangeEvent } from "react";
+﻿import { useMemo, useRef, useState, type ChangeEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRoute, useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -70,7 +70,7 @@ export default function ProfilePage() {
 
   const updateProfile = useMutation({
     mutationFn: async (body: Record<string, unknown>) => {
-      const res = await apiFetch("/api/auth/profile", {
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/auth/profile", {
         method: "PUT",
         body: JSON.stringify(body),
       });
@@ -103,7 +103,7 @@ export default function ProfilePage() {
         reader.readAsDataURL(file);
       });
 
-      const res = await apiFetch("/api/auth/profile", {
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/auth/profile", {
         method: "PUT",
         body: JSON.stringify({ avatar: base64 }),
       });

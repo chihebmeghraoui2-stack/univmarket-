@@ -13,7 +13,7 @@ export default function AdminWilayaChangeRequests() {
   if (!isAdmin) { setLocation("/"); return null; }
 
   const { data: requests, isLoading } = useQuery(["admin-wilaya-change"], async () => {
-    const res = await fetch("/api/wilaya-change", {
+    const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/wilaya-change", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     if (!res.ok) throw new Error(t("load_error"));

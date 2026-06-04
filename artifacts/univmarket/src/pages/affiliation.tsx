@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+﻿import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ export default function AffiliationPage() {
   const { data: network } = useQuery({
     queryKey: ["/api/affiliations/my-network"],
     queryFn: async () => {
-      const res = await fetch("/api/affiliations/my-network", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/affiliations/my-network", {
         headers: { Authorization: `Bearer ${localStorage.getItem("univmarket_token")}` },
       });
       return res.json();
@@ -24,7 +24,7 @@ export default function AffiliationPage() {
   const { data: me } = useQuery({
     queryKey: ["/api/users/me"],
     queryFn: async () => {
-      const res = await fetch("/api/users/me", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/users/me", {
         headers: { Authorization: `Bearer ${localStorage.getItem("univmarket_token")}` },
       });
       return res.json();

@@ -13,7 +13,7 @@ export default function AdminWaitingList() {
   if (!isAdmin) { setLocation("/"); return null; }
 
   const { data: waitingList, isLoading } = useQuery(["admin-waiting-list"], async () => {
-    const res = await fetch("/api/waiting-list", {
+    const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/waiting-list", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     if (!res.ok) throw new Error("Impossible de charger la liste d'attente");
@@ -58,3 +58,4 @@ export default function AdminWaitingList() {
     </div>
   );
 }
+

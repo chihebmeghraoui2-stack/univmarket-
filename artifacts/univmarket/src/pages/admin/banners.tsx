@@ -14,7 +14,7 @@ export default function AdminBanners() {
   if (!isAdmin) { setLocation("/"); return null; }
 
   const { data: banners, isLoading } = useQuery(["admin-banners"], async () => {
-    const res = await fetch("/api/banners", {
+    const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/banners", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     if (!res.ok) throw new Error(t("load_error"));

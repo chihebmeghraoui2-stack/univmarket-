@@ -25,7 +25,7 @@ export default function AdminBroadcast() {
 
   const broadcastMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch("/api/admin/broadcast", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/admin/broadcast", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
         body: JSON.stringify({ title, body }),

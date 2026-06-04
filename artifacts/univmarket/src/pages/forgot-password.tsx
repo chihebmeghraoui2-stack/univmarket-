@@ -25,7 +25,7 @@ export default function ForgotPassword() {
 
   const sendCodeMutation = useMutation({
     mutationFn: async () => {
-      const res = await apiFetch("/api/auth/forgot-password", { method: "POST", body: JSON.stringify({ email }) });
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/auth/forgot-password", { method: "POST", body: JSON.stringify({ email }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || t("order_error"));
       return data;
@@ -38,7 +38,7 @@ export default function ForgotPassword() {
     mutationFn: async () => {
       if (newPassword !== confirmPassword) throw new Error(t("passwords_dont_match"));
       if (newPassword.length < 6) throw new Error(t("min_6_chars"));
-      const res = await apiFetch("/api/auth/reset-password", { method: "POST", body: JSON.stringify({ email, code, newPassword }) });
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/auth/reset-password", { method: "POST", body: JSON.stringify({ email, code, newPassword }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || t("invalid_code"));
       return data;
@@ -49,7 +49,7 @@ export default function ForgotPassword() {
 
   const sellerMutation = useMutation({
     mutationFn: async () => {
-      const res = await apiFetch("/api/auth/seller-forgot-password", { method: "POST", body: JSON.stringify({ email: sellerEmail }) });
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/auth/seller-forgot-password", { method: "POST", body: JSON.stringify({ email: sellerEmail }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || t("order_error"));
       return data;

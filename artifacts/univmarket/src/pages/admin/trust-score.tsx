@@ -14,7 +14,7 @@ export default function AdminTrustScore() {
   if (!isAdmin) { setLocation("/"); return null; }
 
   const { data: trustScores, isLoading } = useQuery(["admin-trust-score"], async () => {
-    const res = await fetch("/api/trust-score", {
+    const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/trust-score", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     if (!res.ok) throw new Error(t("load_error"));

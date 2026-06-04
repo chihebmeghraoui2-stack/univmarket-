@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,15 +29,15 @@ export default function Notifications() {
     }
     try {
       const res = await apiFetch(`/api/notifications/${id}`, { method: "DELETE" });
-      if (res.ok) { refetch(); toast({ title: "Notification supprimée" }); }
+      if (res.ok) { refetch(); toast({ title: "Notification supprimأ©e" }); }
       else toast({ title: "Erreur", variant: "destructive" });
     } catch { toast({ title: "Erreur", variant: "destructive" }); }
   };
 
   const deleteAllRead = async () => {
     try {
-      const res = await apiFetch("/api/notifications", { method: "DELETE" });
-      if (res.ok) { refetch(); toast({ title: "Notifications lues supprimées" }); }
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/notifications", { method: "DELETE" });
+      if (res.ok) { refetch(); toast({ title: "Notifications lues supprimأ©es" }); }
       else toast({ title: "Erreur", variant: "destructive" });
     } catch { toast({ title: "Erreur", variant: "destructive" }); }
   };
@@ -124,3 +124,4 @@ export default function Notifications() {
     </div>
   );
 }
+

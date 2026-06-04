@@ -14,7 +14,7 @@ export default function AdminReports() {
   if (!isAdmin) { setLocation("/"); return null; }
 
   const { data: reports, isLoading } = useQuery(["admin-reports"], async () => {
-    const res = await fetch("/api/reports", {
+    const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/reports", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     if (!res.ok) throw new Error(t("load_error"));

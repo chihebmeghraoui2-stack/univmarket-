@@ -30,7 +30,7 @@ export default function SellerAppointmentsPage() {
   const { data: appointments, isLoading } = useQuery({
     queryKey: ["seller-appointments"],
     queryFn: async () => {
-      const res = await fetch("/api/appointments", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/appointments", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       if (!res.ok) throw new Error(t("load_error"));
@@ -40,7 +40,7 @@ export default function SellerAppointmentsPage() {
 
   const saveAvailability = useMutation({
     mutationFn: async () => {
-      const res = await fetch("/api/sellers/availability", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/sellers/availability", {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
         body: JSON.stringify({ availability: availabilities }),

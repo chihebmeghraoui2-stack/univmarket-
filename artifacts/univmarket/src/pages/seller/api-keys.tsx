@@ -13,7 +13,7 @@ export default function SellerApiKeys() {
   if (!isSeller) { setLocation("/"); return null; }
 
   const { data: apiKeys, isLoading } = useQuery(["seller-api-keys"], async () => {
-    const res = await fetch("/api/api-keys", {
+    const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/api-keys", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     if (!res.ok) throw new Error(t("load_error"));

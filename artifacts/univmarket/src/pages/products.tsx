@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/utils";
@@ -21,7 +21,7 @@ export default function ProductsPage() {
   const { data: categories = [], isLoading: categoriesLoading } = useQuery<any[]>({
     queryKey: ["/api/categories"],
     queryFn: async () => {
-      const res = await apiFetch("/api/categories");
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/categories");
       if (!res.ok) throw new Error("Erreur categories");
       const d = await res.json(); return [...d].sort((a:any,b:any)=>Number(a.code)-Number(b.code));
     },
@@ -31,7 +31,7 @@ export default function ProductsPage() {
   const { data: wilayas = [], isLoading: wilayasLoading } = useQuery<any[]>({
     queryKey: ["/api/wilayas"],
     queryFn: async () => {
-      const res = await apiFetch("/api/wilayas");
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/wilayas");
       if (!res.ok) throw new Error("Erreur wilayas");
       const d = await res.json(); return [...d].sort((a:any,b:any)=>Number(a.code)-Number(b.code));
     },
@@ -89,7 +89,7 @@ export default function ProductsPage() {
       ) : isError ? (
         <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-red-700">Erreur de chargement des produits.</div>
       ) : products.length === 0 ? (
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-6 text-slate-700">Aucun produit trouvé.</div>
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-6 text-slate-700">Aucun produit trouvأ©.</div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {products.map((product) => (
@@ -106,7 +106,7 @@ export default function ProductsPage() {
                   <p className="text-sm text-muted-foreground line-clamp-2">{product.seller?.name ?? "Vendeur inconnu"}</p>
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge variant="secondary">{product.wilaya?.nameFr ?? "--"}</Badge>
-                    {product.seller?.verifiedAt ? <Badge variant="outline">Vérifié</Badge> : null}
+                    {product.seller?.verifiedAt ? <Badge variant="outline">Vأ©rifiأ©</Badge> : null}
                   </div>
                 </CardContent>
               </Card>
@@ -117,3 +117,4 @@ export default function ProductsPage() {
     </div>
   );
 }
+

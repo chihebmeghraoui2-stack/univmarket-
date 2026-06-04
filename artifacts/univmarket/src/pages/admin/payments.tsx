@@ -13,7 +13,7 @@ export default function AdminPayments() {
   if (!isAdmin) { setLocation("/"); return null; }
 
   const { data: payments, isLoading } = useQuery(["admin-payments"], async () => {
-    const res = await fetch("/api/payments", {
+    const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/payments", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     if (!res.ok) throw new Error("Impossible de charger les paiements");
@@ -60,3 +60,4 @@ export default function AdminPayments() {
     </div>
   );
 }
+

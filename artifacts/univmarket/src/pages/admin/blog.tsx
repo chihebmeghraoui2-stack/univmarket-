@@ -26,7 +26,7 @@ export default function AdminBlogPage() {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["admin-blog"],
     queryFn: async () => {
-      const res = await fetch("/api/blog", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/blog", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       if (!res.ok) throw new Error(t("load_error"));

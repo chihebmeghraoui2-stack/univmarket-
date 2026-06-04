@@ -40,7 +40,7 @@ export default function DirectChat() {
   const roleTitle = user?.role === "admin" ? "Tous les" : user?.role === "seller" ? "Client" : "Vendeur";
 
   useEffect(() => {
-    apiFetch("/api/direct-messages/contacts")
+    apifetch((import.meta.env.VITE_API_URL || "") + "/api/direct-messages/contacts")
       .then(r => r.json())
       .then(data => { const arr = Array.isArray(data) ? data : data?.data ?? []; setContacts(arr); setFiltered(arr); })
       .catch(() => toast({ title: "Erreur chargement contacts", variant: "destructive" }));

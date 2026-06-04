@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,7 @@ export default function TwoFactorPage() {
   const { data: status } = useQuery({
     queryKey: ["/api/2fa/status"],
     queryFn: async () => {
-      const res = await fetch("/api/2fa/status", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/2fa/status", {
         headers: { Authorization: `Bearer ${localStorage.getItem("univmarket_token")}` },
       });
       return res.json();
@@ -29,7 +29,7 @@ export default function TwoFactorPage() {
 
   const setupMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch("/api/2fa/setup", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/2fa/setup", {
         method: "POST",
         headers: { Authorization: `Bearer ${localStorage.getItem("univmarket_token")}` },
       });
@@ -40,7 +40,7 @@ export default function TwoFactorPage() {
 
   const verifyMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch("/api/2fa/verify", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/2fa/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("univmarket_token")}` },
         body: JSON.stringify({ token: code }),
@@ -59,7 +59,7 @@ export default function TwoFactorPage() {
 
   const disableMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch("/api/2fa/disable", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/2fa/disable", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("univmarket_token")}` },
         body: JSON.stringify({ token: code }),

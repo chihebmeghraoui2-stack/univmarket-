@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -94,7 +94,7 @@ export default function SellerServices() {
     }
     setAiLoading(true);
     try {
-      const res = await fetch("/api/ai/generate-description", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/ai/generate-description", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -167,7 +167,7 @@ export default function SellerServices() {
   const { data: myTrendRequest } = useQuery({
     queryKey: ["trending-request-my"],
     queryFn: async () => {
-      const res = await apiFetch("/api/trending-requests/my");
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/trending-requests/my");
       if (!res.ok) return null;
       return res.json();
     },
@@ -175,7 +175,7 @@ export default function SellerServices() {
 
   const submitTrend = useMutation({
     mutationFn: async () => {
-      const res = await apiFetch("/api/trending-requests", {
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/trending-requests", {
         method: "POST",
         body: JSON.stringify({ service_id: trendServiceId, message: trendMessage }),
       });
@@ -183,7 +183,7 @@ export default function SellerServices() {
       return res.json();
     },
     onSuccess: () => {
-      toast({ title: "✅ Demande envoyée à l'admin !" });
+      toast({ title: "âœ… Demande envoyأ©e أ  l'admin !" });
       setTrendOpen(false);
       setTrendMessage("");
       setTrendServiceId(null);
@@ -198,7 +198,7 @@ export default function SellerServices() {
       if (!res.ok) throw new Error("Erreur");
     },
     onSuccess: () => {
-      toast({ title: "Demande annulée" });
+      toast({ title: "Demande annulأ©e" });
       queryClient.invalidateQueries({ queryKey: ["trending-request-my"] });
     },
   });
@@ -259,7 +259,7 @@ export default function SellerServices() {
                       </Link>
                       {svc.status === "approved" && (
                         myTrendRequest?.service_id === svc.id ? (
-                          <Button variant="ghost" size="icon" className="h-8 w-8" title={`Demande ${myTrendRequest.status === 'pending' ? 'en attente' : myTrendRequest.status === 'approved' ? 'acceptée' : 'refusée'}`}>
+                          <Button variant="ghost" size="icon" className="h-8 w-8" title={`Demande ${myTrendRequest.status === 'pending' ? 'en attente' : myTrendRequest.status === 'approved' ? 'acceptأ©e' : 'refusأ©e'}`}>
                             <TrendingUp className={`h-4 w-4 ${myTrendRequest.status === 'approved' ? 'text-green-600' : myTrendRequest.status === 'pending' ? 'text-amber-500' : 'text-red-400'}`} />
                           </Button>
                         ) : (
@@ -301,7 +301,7 @@ export default function SellerServices() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="px-6 py-5 space-y-6">
 
-              {/* ── Section 1 : Informations de base ── */}
+              {/* â”€â”€ Section 1 : Informations de base â”€â”€ */}
               <div className="space-y-4">
                 <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
                   <span className="w-6 h-6 rounded-full bg-teal-600 text-white text-xs font-bold flex items-center justify-center">1</span>
@@ -325,7 +325,7 @@ export default function SellerServices() {
                       <Button type="button" size="sm" variant="outline" onClick={generateDescription} disabled={aiLoading}
                         className="h-7 text-xs gap-1.5 border-teal-400 text-teal-700 hover:bg-teal-50 rounded-lg">
                         {aiLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
-                        {aiLoading ? "Génération..." : "Générer avec IA"}
+                        {aiLoading ? "Gأ©nأ©ration..." : "Gأ©nأ©rer avec IA"}
                       </Button>
                     </div>
                     <FormControl>
@@ -336,11 +336,11 @@ export default function SellerServices() {
                 )} />
               </div>
 
-              {/* ── Section 2 : Prix & Délai ── */}
+              {/* â”€â”€ Section 2 : Prix & Dأ©lai â”€â”€ */}
               <div className="space-y-4">
                 <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
                   <span className="w-6 h-6 rounded-full bg-teal-600 text-white text-xs font-bold flex items-center justify-center">2</span>
-                  <h3 className="text-sm font-semibold text-gray-700">Prix & Délai</h3>
+                  <h3 className="text-sm font-semibold text-gray-700">Prix & Dأ©lai</h3>
                 </div>
 
                 <div className="grid grid-cols-3 gap-3">
@@ -383,11 +383,11 @@ export default function SellerServices() {
                 </div>
               </div>
 
-              {/* ── Section 3 : Catégorie ── */}
+              {/* â”€â”€ Section 3 : Catأ©gorie â”€â”€ */}
               <div className="space-y-4">
                 <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
                   <span className="w-6 h-6 rounded-full bg-teal-600 text-white text-xs font-bold flex items-center justify-center">3</span>
-                  <h3 className="text-sm font-semibold text-gray-700">Catégorie</h3>
+                  <h3 className="text-sm font-semibold text-gray-700">Catأ©gorie</h3>
                 </div>
 
                 <FormField control={form.control} name="category_id" render={({ field }) => (
@@ -411,20 +411,20 @@ export default function SellerServices() {
                   <div className="border border-teal-200 bg-teal-50/50 rounded-xl p-4 space-y-3">
                     <label className="text-sm font-semibold flex items-center gap-2 text-teal-800">
                       <MapPin className="h-4 w-4" />
-                      Localisation de l'événement <span className="text-xs text-red-500">*</span>
+                      Localisation de l'أ©vأ©nement <span className="text-xs text-red-500">*</span>
                     </label>
-                    <p className="text-xs text-teal-600">Ex: Département Informatique, Université Tlemcen</p>
+                    <p className="text-xs text-teal-600">Ex: Dأ©partement Informatique, Universitأ© Tlemcen</p>
                     <LocationPicker value={serviceLocation} onChange={setServiceLocation} />
                   </div>
                 )}
               </div>
 
-              {/* ── Section 4 : Photos ── */}
+              {/* â”€â”€ Section 4 : Photos â”€â”€ */}
               <div className="space-y-4">
                 <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
                   <span className="w-6 h-6 rounded-full bg-teal-600 text-white text-xs font-bold flex items-center justify-center">4</span>
                   <h3 className="text-sm font-semibold text-gray-700">Photos du service</h3>
-                  <span className="ml-auto text-xs text-muted-foreground bg-gray-100 px-2 py-0.5 rounded-full">{photos.length}/5 — min 3</span>
+                  <span className="ml-auto text-xs text-muted-foreground bg-gray-100 px-2 py-0.5 rounded-full">{photos.length}/5 â€” min 3</span>
                 </div>
 
                 <div className="grid grid-cols-5 gap-2">
@@ -435,13 +435,13 @@ export default function SellerServices() {
                       <img src={photo} className="w-full h-20 object-cover" />
                       {coverIndex === idx && (
                         <div className="absolute top-0 inset-x-0 bg-teal-500 text-white text-center font-bold py-0.5" style={{fontSize:"9px"}}>
-                          ★ COVER
+                          âک… COVER
                         </div>
                       )}
                       <button type="button"
                         onClick={e => { e.stopPropagation(); removePhoto(idx); }}
                         className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center shadow-sm transition">
-                        ×
+                        أ—
                       </button>
                     </div>
                   ))}
@@ -456,19 +456,19 @@ export default function SellerServices() {
 
                 {photos.length < 3 && (
                   <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
-                    <span className="text-amber-500 text-sm">⚠</span>
-                    <p className="text-xs text-amber-700">Ajoutez encore <strong>{3 - photos.length} photo(s)</strong> — minimum 3 requises</p>
+                    <span className="text-amber-500 text-sm">âڑ </span>
+                    <p className="text-xs text-amber-700">Ajoutez encore <strong>{3 - photos.length} photo(s)</strong> â€” minimum 3 requises</p>
                   </div>
                 )}
                 {photos.length >= 3 && (
                   <div className="flex items-center gap-2 bg-teal-50 border border-teal-200 rounded-xl px-3 py-2">
-                    <span className="text-teal-500 text-sm">✓</span>
-                    <p className="text-xs text-teal-700">Cliquez sur une photo pour la définir comme couverture</p>
+                    <span className="text-teal-500 text-sm">âœ“</span>
+                    <p className="text-xs text-teal-700">Cliquez sur une photo pour la dأ©finir comme couverture</p>
                   </div>
                 )}
               </div>
 
-              {/* ── Footer ── */}
+              {/* â”€â”€ Footer â”€â”€ */}
               <div className="flex gap-3 pt-2 border-t border-gray-100">
                 <Button type="button" variant="outline" onClick={() => setCreateOpen(false)} className="flex-1 rounded-xl h-11">
                   {t("cancel")}
@@ -496,8 +496,8 @@ export default function SellerServices() {
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="bg-purple-50 rounded-xl p-3 text-sm text-purple-800 border border-purple-100">
-              <p className="font-medium mb-1">🌟 Comment ça fonctionne ?</p>
-              <p className="text-xs leading-relaxed">Votre service sera proposé à l'admin pour être affiché en page d'accueil comme produit tendance. L'admin peut accepter ou refuser.</p>
+              <p className="font-medium mb-1">ًںŒں Comment أ§a fonctionne ?</p>
+              <p className="text-xs leading-relaxed">Votre service sera proposأ© أ  l'admin pour أھtre affichأ© en page d'accueil comme produit tendance. L'admin peut accepter ou refuser.</p>
             </div>
             {services?.data?.find((s: any) => s.id === trendServiceId) && (
               <div className="flex items-center gap-3 bg-white border border-gray-100 rounded-xl p-3">
@@ -515,7 +515,7 @@ export default function SellerServices() {
               <Textarea
                 value={trendMessage}
                 onChange={e => setTrendMessage(e.target.value)}
-                placeholder="Expliquez pourquoi ce service mérite d'être mis en tendance..."
+                placeholder="Expliquez pourquoi ce service mأ©rite d'أھtre mis en tendance..."
                 rows={3}
                 className="rounded-xl resize-none text-sm"
                 maxLength={300}
@@ -538,3 +538,4 @@ export default function SellerServices() {
     </div>
   );
 }
+

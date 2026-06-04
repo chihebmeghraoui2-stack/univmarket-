@@ -24,7 +24,7 @@ export default function AdminPasswordResets() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin-password-resets"],
     queryFn: async () => {
-      const r = await fetch("/api/admin/password-reset-requests", { headers: H() });
+      const r = await fetch((import.meta.env.VITE_API_URL || "") + "/api/admin/password-reset-requests", { headers: H() });
       const json = await r.json();
       return json.data ?? [];
     },

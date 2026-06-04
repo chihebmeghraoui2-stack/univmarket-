@@ -56,7 +56,7 @@ export default function ThesisAnalyzer() {
     setLoading(true);
     setAnalysis("");
     try {
-      const res = await fetch("/api/ai/analyze-thesis", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/ai/analyze-thesis", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
@@ -189,3 +189,4 @@ export default function ThesisAnalyzer() {
     </div>
   );
 }
+

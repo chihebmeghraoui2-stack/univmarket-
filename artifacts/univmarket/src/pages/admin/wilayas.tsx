@@ -16,7 +16,7 @@ export default function AdminWilayas() {
   const { data: wilayas, isLoading } = useQuery({
     queryKey: ["admin-wilayas-stats"],
     queryFn: async () => {
-      const res = await apiFetch("/api/admin/wilayas/stats");
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/admin/wilayas/stats");
       if (!res.ok) throw new Error(t("load_error"));
       return res.json();
     },

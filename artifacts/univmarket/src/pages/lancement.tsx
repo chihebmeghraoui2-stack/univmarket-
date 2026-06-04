@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+﻿import { useMemo, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -48,7 +48,7 @@ export default function LancementPage() {
   const { data: stats, isLoading } = useQuery<{ count: number }>({
     queryKey: ["waiting-list-count"],
     queryFn: async () => {
-      const res = await fetch("/api/waiting-list/count");
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/waiting-list/count");
       if (!res.ok) throw new Error(t("load_error"));
       return res.json();
     },
@@ -56,7 +56,7 @@ export default function LancementPage() {
 
   const joinMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch("/api/waiting-list", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/waiting-list", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, wilaya, role }),

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/utils";
@@ -42,8 +42,8 @@ export default function SellerProducts() {
   const { data: categories = [], isLoading: categoriesLoading } = useQuery<any[]>({
     queryKey: ["/api/categories"],
     queryFn: async () => {
-      const res = await apiFetch("/api/categories");
-      if (!res.ok) throw new Error("Erreur catégories");
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/categories");
+      if (!res.ok) throw new Error("Erreur catأ©gories");
       return res.json();
     },
   });
@@ -51,7 +51,7 @@ export default function SellerProducts() {
   const { data: products = [], isLoading: productsLoading } = useQuery<any[]>({
     queryKey: ["sellerProducts"],
     queryFn: async () => {
-      const res = await apiFetch("/api/seller/products");
+      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/seller/products");
       if (!res.ok) throw new Error("Erreur produits");
       return res.json();
     },
@@ -77,7 +77,7 @@ export default function SellerProducts() {
       setWilayaId(null);
       setLocation2(null);
       setEditingId(null);
-      toast({ title: "Succès", description: "Produit enregistré.", variant: "success" });
+      toast({ title: "Succأ¨s", description: "Produit enregistrأ©.", variant: "success" });
     },
     onError: () => {
       toast({ title: "Erreur", description: "Impossible d'enregistrer le produit.", variant: "destructive" });
@@ -92,7 +92,7 @@ export default function SellerProducts() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["sellerProducts"]);
-      toast({ title: "Supprimé", description: "Produit supprimé.", variant: "success" });
+      toast({ title: "Supprimأ©", description: "Produit supprimأ©.", variant: "success" });
     },
     onError: () => {
       toast({ title: "Erreur", description: "Impossible de supprimer le produit.", variant: "destructive" });
@@ -155,7 +155,7 @@ export default function SellerProducts() {
           <Textarea value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Description" />
           <div className="grid gap-4 lg:grid-cols-2">
             <Select value={categoryId ?? ""} onValueChange={(value) => setCategoryId(value ? Number(value) : null)}>
-              <option value="">Catégorie</option>
+              <option value="">Catأ©gorie</option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>{category.name_fr ?? category.name}</option>
               ))}
@@ -164,14 +164,14 @@ export default function SellerProducts() {
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">
-              📍 Localisation de l'événement <span className="text-xs text-muted-foreground">(optionnel — pour événements physiques)</span>
+              ًں“چ Localisation de l'أ©vأ©nement <span className="text-xs text-muted-foreground">(optionnel â€” pour أ©vأ©nements physiques)</span>
             </label>
             <LocationPicker value={eventLocation} onChange={setEventLocation} />
           </div>
           {/* Localisation pour evenements physiques */}
           <div className="space-y-2">
             <label className="text-sm font-medium flex items-center gap-2">
-              📍 Localisation de votre evenement <span className="text-xs text-muted-foreground">(optionnel)</span>
+              ًں“چ Localisation de votre evenement <span className="text-xs text-muted-foreground">(optionnel)</span>
             </label>
             <LocationPicker value={location} onChange={setLocation2} />
           </div>
@@ -180,13 +180,13 @@ export default function SellerProducts() {
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isLoading}>
-              {editingId ? "Mettre à jour" : "Créer le produit"}
+              {editingId ? "Mettre أ  jour" : "Crأ©er le produit"}
             </Button>
             {editingId ? (
               <Button variant="outline" onClick={() => setEditingId(null)}>Annuler</Button>
             ) : null}
           </div>
-          <p className="text-sm text-muted-foreground">Minimum 3 photos, maximum 5. La photo de couverture doit être sélectionnée parmi les photos ajoutées.</p>
+          <p className="text-sm text-muted-foreground">Minimum 3 photos, maximum 5. La photo de couverture doit أھtre sأ©lectionnأ©e parmi les photos ajoutأ©es.</p>
         </CardContent>
       </Card>
 
@@ -194,7 +194,7 @@ export default function SellerProducts() {
         {productsLoading ? (
           [...Array(3)].map((_, index) => <Skeleton key={index} className="h-32 rounded-3xl" />)
         ) : products.length === 0 ? (
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-6 text-slate-700">Aucun produit trouvé.</div>
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-6 text-slate-700">Aucun produit trouvأ©.</div>
         ) : (
           products.map((product) => (
             <Card key={product.id} className="overflow-hidden">
@@ -228,3 +228,4 @@ export default function SellerProducts() {
     </div>
   );
 }
+

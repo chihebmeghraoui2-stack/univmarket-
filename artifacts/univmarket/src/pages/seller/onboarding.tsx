@@ -15,7 +15,7 @@ export default function SellerOnboarding() {
   if (!isSeller) { setLocation("/"); return null; }
 
   const { data: progress, isLoading } = useQuery(["seller-onboarding"], async () => {
-    const res = await fetch("/api/onboarding", {
+    const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/onboarding", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     if (!res.ok) throw new Error(t("load_error"));

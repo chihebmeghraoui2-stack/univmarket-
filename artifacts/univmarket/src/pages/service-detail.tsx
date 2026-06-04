@@ -42,7 +42,7 @@ export default function ServiceDetail() {
     if (comment.trim().length < 5) return;
     setAiLoading(true); setAiRating(null); setBlocked(false);
     try {
-      const res = await fetch("/api/ai/moderate-review", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/ai/moderate-review", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ comment }),
@@ -310,7 +310,7 @@ export default function ServiceDetail() {
                     try {
                       const completedOrder = orders?.data?.find((o: any) => o.service_id === id && o.status === "completed");
                       if (!completedOrder) { toast({ title: t("need_completed_order"), variant: "destructive" }); return; }
-                      const res = await fetch("/api/reviews", {
+                      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/reviews", {
                         method: "POST",
                         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + localStorage.getItem("token") },
                         body: JSON.stringify({ order_id: completedOrder.id, rating: aiRating, body: comment }),

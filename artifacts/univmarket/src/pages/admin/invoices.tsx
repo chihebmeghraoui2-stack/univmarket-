@@ -13,7 +13,7 @@ export default function AdminInvoices() {
   if (!isAdmin) { setLocation("/"); return null; }
 
   const { data: invoices, isLoading } = useQuery(["admin-invoices"], async () => {
-    const res = await fetch("/api/invoices", {
+    const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/invoices", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     if (!res.ok) throw new Error("Impossible de charger les factures");
@@ -60,3 +60,4 @@ export default function AdminInvoices() {
     </div>
   );
 }
+

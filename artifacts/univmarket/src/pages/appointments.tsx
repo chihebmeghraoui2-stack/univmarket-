@@ -13,7 +13,7 @@ export default function AppointmentsPage() {
   if (!isAuthenticated) { setLocation("/"); return null; }
 
   const { data: appointments, isLoading } = useQuery(["appointments"], async () => {
-    const res = await fetch("/api/appointments", {
+    const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/appointments", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     if (!res.ok) throw new Error(t("load_error"));

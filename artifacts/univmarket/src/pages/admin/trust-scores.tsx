@@ -13,7 +13,7 @@ export default function AdminTrustScoresPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin-trust-scores"],
     queryFn: async () => {
-      const res = await fetch("/api/admin/trust-scores", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/admin/trust-scores", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       if (!res.ok) throw new Error(t("load_error"));

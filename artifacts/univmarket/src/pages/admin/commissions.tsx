@@ -24,7 +24,7 @@ export default function AdminCommissionsPage() {
   const { data: categories, isLoading: categoriesLoading, refetch } = useQuery({
     queryKey: ["commissions-categories"],
     queryFn: async () => {
-      const res = await fetch("/api/commissions", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/commissions", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
       if (!res.ok) throw new Error(t("load_error"));
       return res.json();
     },
@@ -33,7 +33,7 @@ export default function AdminCommissionsPage() {
   const { data: history, isLoading: historyLoading } = useQuery({
     queryKey: ["commissions-history"],
     queryFn: async () => {
-      const res = await fetch("/api/commissions/history", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+      const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/commissions/history", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
       if (!res.ok) return [];
       return res.json();
     },

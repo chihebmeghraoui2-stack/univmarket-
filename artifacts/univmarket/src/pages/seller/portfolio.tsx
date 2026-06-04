@@ -13,7 +13,7 @@ export default function SellerPortfolio() {
   if (!isSeller) { setLocation("/"); return null; }
 
   const { data: portfolio, isLoading } = useQuery(["seller-portfolio"], async () => {
-    const res = await fetch("/api/portfolio", {
+    const res = await fetch((import.meta.env.VITE_API_URL || "") + "/api/portfolio", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     if (!res.ok) throw new Error(t("load_error"));
