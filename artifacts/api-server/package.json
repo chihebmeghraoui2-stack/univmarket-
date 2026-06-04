@@ -13,8 +13,6 @@
     "@types/compression": "^1.8.1",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/nodemailer": "^8.0.0",
-    "@workspace/api-zod": "workspace:*",
-    "@workspace/db": "workspace:*",
     "bcryptjs": "^3.0.3",
     "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
