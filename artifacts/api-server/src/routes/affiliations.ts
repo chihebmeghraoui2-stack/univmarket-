@@ -1,4 +1,4 @@
-import { Router } from "express";
+ï»¿import { Router } from "express";
 import { db } from "@workspace/db";
 import { affiliationsTable, affiliationEarningsTable, usersTable } from "@workspace/db/schema";
 import { eq, and } from "drizzle-orm";
@@ -6,7 +6,7 @@ import { requireAuth } from "../middleware/auth";
 
 const router = Router();
 
-// Mon réseau d affiliation
+// Mon rï¿½seau d affiliation
 router.get("/api/affiliations/my-network", requireAuth, async (req, res) => {
   try {
     const userId = (req as any).user.id;
@@ -50,7 +50,7 @@ router.get("/api/affiliations/earnings", requireAuth, async (req, res) => {
   }
 });
 
-// Créer lien affiliation lors inscription
+// Crï¿½er lien affiliation lors inscription
 router.post("/api/affiliations/register", async (req, res) => {
   try {
     const { newUserId, referralCode } = req.body;
@@ -66,7 +66,7 @@ router.post("/api/affiliations/register", async (req, res) => {
       level: 1, commissionRate: "5.00"
     }).onConflictDoNothing();
 
-    // Niveau 2 — parrain du parrain
+    // Niveau 2 ï¿½ parrain du parrain
     const [lvl2] = await db.select().from(affiliationsTable)
       .where(and(eq(affiliationsTable.userId, referrer.id), eq(affiliationsTable.level, 1)));
     if (lvl2) {
@@ -93,3 +93,4 @@ router.post("/api/affiliations/register", async (req, res) => {
 });
 
 export default router;
+
