@@ -29,7 +29,7 @@ app.use(
 );
 
 app.use(compression());
-app.use(cors());
+app.use(cors({ origin: ["https://univmarket-dz.vercel.app", "http://localhost:5173"], credentials: true }));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
@@ -58,4 +58,5 @@ app.get("/api/docs", (_req, res) => {
 app.use("/api", router);
 
 export default app;
+
 
