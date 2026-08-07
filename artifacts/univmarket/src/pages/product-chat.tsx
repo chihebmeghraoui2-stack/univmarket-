@@ -25,7 +25,7 @@ export default function ProductChat() {
   const { data, isLoading, isError, refetch } = useQuery<any>({
     queryKey: ["productChat", chatId],
     queryFn: async () => {
-      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/product-chats/" + chatId + "/messages");
+      const res = await apiFetch("/api/product-chats/" + chatId + "/messages");
       if (!res.ok) throw new Error("Chat introuvable");
       return res.json();
     },
@@ -37,7 +37,7 @@ export default function ProductChat() {
   const { data: serviceData } = useQuery<any>({
     queryKey: ["service", serviceId],
     queryFn: async () => {
-      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/services/" + serviceId);
+      const res = await apiFetch("/api/services/" + serviceId);
       if (!res.ok) throw new Error("Service introuvable");
       return res.json();
     },
@@ -50,7 +50,7 @@ export default function ProductChat() {
 
   const sendMutation = useMutation({
     mutationFn: async () => {
-      const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/product-chats/" + chatId + "/messages", { method: "POST", body: JSON.stringify({ body: message }) });
+      const res = await apiFetch("/api/product-chats/" + chatId + "/messages", { method: "POST", body: JSON.stringify({ body: message }) });
       if (!res.ok) throw new Error("Envoi impossible");
       return res.json();
     },
@@ -59,19 +59,19 @@ export default function ProductChat() {
   });
 
   const validateMutation = useMutation({
-    mutationFn: async () => { const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/product-chats/" + chatId + "/validate", { method: "POST" }); if (!res.ok) throw new Error(); return res.json(); },
+    mutationFn: async () => { const res = await apiFetch("/api/product-chats/" + chatId + "/validate", { method: "POST" }); if (!res.ok) throw new Error(); return res.json(); },
     onSuccess: () => refetch(),
     onError: () => toast({ title: "Erreur", variant: "destructive" }),
   });
 
   const acceptMutation = useMutation({
-    mutationFn: async () => { const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/product-chats/" + chatId + "/accept", { method: "POST" }); if (!res.ok) throw new Error(); return res.json(); },
+    mutationFn: async () => { const res = await apiFetch("/api/product-chats/" + chatId + "/accept", { method: "POST" }); if (!res.ok) throw new Error(); return res.json(); },
     onSuccess: () => refetch(),
     onError: () => toast({ title: "Erreur", variant: "destructive" }),
   });
 
   const refuseMutation = useMutation({
-    mutationFn: async () => { const res = await apifetch((import.meta.env.VITE_API_URL || "") + "/api/product-chats/" + chatId + "/refuse", { method: "POST" }); if (!res.ok) throw new Error(); return res.json(); },
+    mutationFn: async () => { const res = await apiFetch("/api/product-chats/" + chatId + "/refuse", { method: "POST" }); if (!res.ok) throw new Error(); return res.json(); },
     onSuccess: () => refetch(),
     onError: () => toast({ title: "Erreur", variant: "destructive" }),
   });
@@ -259,4 +259,7 @@ export default function ProductChat() {
     </div>
   );
 }
+
+
+
 
