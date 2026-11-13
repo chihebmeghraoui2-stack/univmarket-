@@ -51,3 +51,8 @@ Thumbs.db
 **/.env
 .vercel
 .env*
+
+artifacts/api-server/check-*.cjs
+artifacts/api-server/list-users.cjs
+artifacts/api-server/src_BACKUP_avant_modele/
+artifacts/api-server/build.mjs.bak

@@ -1,4 +1,4 @@
-﻿import { Router, type IRouter } from "express";
+import { Router, type IRouter } from "express";
 import { eq, and, count, sql, desc, ilike, or } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { db, usersTable, servicesTable, ordersTable, disputesTable, withdrawalRequestsTable, wilayasTable, reviewsTable, categoriesTable, notificationsTable, passwordResetRequestsTable } from "@workspace/db";
@@ -525,7 +525,7 @@ REGLES ABSOLUES:
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": "Bearer " + process.env.GROQ_API_KEY },
-      body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages: messages_to_send, temperature: 0.2, max_tokens: 2048 }),
+      body: JSON.stringify({ model: "openai/gpt-oss-120b", reasoning_effort: "low", messages: messages_to_send, temperature: 0.2, max_tokens: 2048 }),
     });
 
     if (!response.ok) {
@@ -535,7 +535,7 @@ REGLES ABSOLUES:
     }
     const data = await response.json();
     const reply = data.choices?.[0]?.message?.content || "Je n'ai pas pu gnrer une rponse.";
-    res.json({ reply, model: "llama-3.3-70b-versatile", timestamp: new Date().toISOString() });
+    res.json({ reply, model: "openai/gpt-oss-120b", timestamp: new Date().toISOString() });
 
   } catch (e) {
     console.error(e);

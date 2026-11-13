@@ -1,4 +1,4 @@
-﻿import { Router } from "express";
+import { Router } from "express";
 import { db } from "@workspace/db";
 import { servicesTable, ordersTable, reviewsTable, sellerProfilesTable, usersTable, categoriesTable, wilayasTable } from "@workspace/db";
 import { eq, and, desc, ne, sql, count, avg } from "drizzle-orm";
@@ -33,12 +33,12 @@ async function extractAndSaveMemory(userId: number, role: string, message: strin
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": "Bearer " + process.env.GROQ_API_KEY },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: "openai/gpt-oss-120b", reasoning_effort: "low",
         messages: [
           { role: "system", content: "Extrais les informations importantes a retenir. Reponds UNIQUEMENT en JSON: {memories: [{key: string, value: string}]}. Max 3 elements. Si rien, reponds {memories: []}. Cles possibles: preference_langue, specialite, objectif_prix, wilaya, type_service_recherche, budget_max, probleme_recurrent" },
           { role: "user", content: "Message: " + message + "\nReponse IA: " + reply }
         ],
-        max_tokens: 200, temperature: 0.1
+        max_tokens: 800, temperature: 0.1
       })
     });
     const data = await groqRes.json();
@@ -341,7 +341,7 @@ RÈGLES STRICTES:
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
-      body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages, max_tokens: 800, temperature: 0.5 })
+      body: JSON.stringify({ model: "openai/gpt-oss-120b", reasoning_effort: "low", messages, max_tokens: 800, temperature: 0.5 })
     });
 
     if (response.ok) {

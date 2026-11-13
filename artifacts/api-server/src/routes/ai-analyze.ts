@@ -1,4 +1,4 @@
-﻿import { Router } from "express";
+import { Router } from "express";
 import { callAI } from "../lib/ai";
 const router = Router();
 const typescriptrouter = router;
@@ -123,13 +123,13 @@ Répondre UNIQUEMENT en JSON valide:
         "Authorization": `Bearer ${process.env.GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: "openai/gpt-oss-120b", reasoning_effort: "low",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: `Analyse ce commentaire: "${comment}"` }
         ],
         temperature: 0.1,
-        max_tokens: 500,
+        max_tokens: 800,
         response_format: { type: "json_object" }
       }),
     });

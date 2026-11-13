@@ -1,4 +1,4 @@
-﻿
+
 // Migration: ajouter colonnes localisation si elles n'existent pas
 import pg from "pg";
 const { Pool: LocationPool } = pg;
@@ -70,8 +70,8 @@ async function expandQueryWithGroq(q: string): Promise<string[]> {
         "Authorization": `Bearer ${groqKey}`,
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
-        max_tokens: 150,
+        model: "openai/gpt-oss-120b", reasoning_effort: "low",
+        max_tokens: 800,
         temperature: 0.1,
         messages: [
           {

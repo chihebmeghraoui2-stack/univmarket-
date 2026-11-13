@@ -1,4 +1,4 @@
-﻿export async function callAI(prompt: string, maxTokens: number = 400): Promise<string> {
+export async function callAI(prompt: string, maxTokens: number = 400): Promise<string> {
   // 1. Essai GROQ
   const groqKey = process.env.GROQ_API_KEY;
   if (groqKey) {
@@ -7,9 +7,9 @@
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${groqKey}` },
         body: JSON.stringify({
-          model: "llama-3.3-70b-versatile",
+          model: "openai/gpt-oss-120b", reasoning_effort: "low",
           messages: [{ role: "user", content: prompt }],
-          max_tokens: maxTokens,
+          max_tokens: Math.max(maxTokens, 800),
           temperature: 0.7
         })
       });

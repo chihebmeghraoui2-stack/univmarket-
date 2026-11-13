@@ -1,4 +1,4 @@
-﻿import { Router, type IRouter } from "express";
+import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
 import {
   productsTable,
@@ -1035,7 +1035,7 @@ Répondre UNIQUEMENT en JSON valide:
         "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: "openai/gpt-oss-120b", reasoning_effort: "low",
         messages: [
           { role: "system", content: systemPrompt },
           {
